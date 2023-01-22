@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>2022-summary</title>
+    <link href="/2023/01/21/2022-summary/"/>
+    <url>/2023/01/21/2022-summary/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>一直想写一篇年终总结，但是一直耽耽误误的。这一篇也是写了好久才写出来的。</p></blockquote><p>哈哈，首先给自己来一个新年祝福吧。</p><p>希望新的一年里所求皆如愿，所行化坦途。多喜乐，长安宁！！！</p><h2 id="经历"><a href="#经历" class="headerlink" title="经历"></a>经历</h2><p> 对我而言，今年既是平常又是极不平常的一年。或许某些选择改变了我的人生方向。</p><p>年初，1月10号左右，我开始接触CTF。CTF方向很多，一开始我也不知道从哪个方向入手，于是就逐个方向慢慢尝试。大概试了一个星期左右吧，我发现更喜欢PWN方向，觉得找到程序漏洞，然后直接控制远程主机很厉害。然后网上很多大佬都认为二进制方向很有前景，于是就选择了PWN。</p><p>刚开始时，真的是很懵啊！！！自己啥也不懂，完全就是一个小白。于是就开始慢慢摸索，学习汇编语言，学习函数调用过程等等。其中，我对堆栈总是一知半解的，但是就是硬着头皮做题嘛，并且不断画程序调用堆栈图，直到自己理解了为止。经历了一个寒假，我算是入门了PWN。</p><p>开学时，参加了第一个CTF比赛，挺激动的吧，但是压根就看不懂题啊。只能继续刷BUUCTF了。然后，参加了学院举办的峻极争霸赛，这里面的PWN题比较简单，我做了三四道吧，依稀记得是两道栈，一道格式化字符串，还有一个简单的堆题，最后我们队伍拿了三等奖。之后，我不断刷题，不断学习新知识，并且参加一些CTF比赛。由于参加的CTF比赛比较多，但是都没有拿到成绩嘛，也就不说了。</p><p>综上，入门CTF，走安全道路，并为之付出大量时间是我今年做出的最大选择。</p><h2 id="收获"><a href="#收获" class="headerlink" title="收获"></a>收获</h2><ol><li>学习了汇编语言</li><li>学习了栈、libc堆(house系列，堆利用技巧)、kernel(菜的一批)、musl libc(刚入门)</li><li>编程水平有了一定提升</li></ol><h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>不足之处太多了，也就不一一列举了。这里稍微列举几个自己今年想要改的，也就是一个flag。</p><ol><li>阅读代码能力不太行，好多PWN题都分析不出bug</li><li>做题时比较浮躁，缺乏耐心</li></ol><h2 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h2><p>希望未来能够挖到第一个CVE漏洞，并且CTF比赛能够打出成绩。</p><p>就这么多了吧，实在是没啥好写的了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>summary</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>personal</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Kernel-pwn</title>
     <link href="/2023/01/18/Kernel-pwn/"/>
     <url>/2023/01/18/Kernel-pwn/</url>
@@ -36,6 +61,18 @@
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
     
     
+    <categories>
+      
+      <category>others</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>others</tag>
+      
+    </tags>
     
   </entry>
   
