@@ -319,14 +319,16 @@
     
     <categories>
       
-      <category>CVE复现</category>
+      <category>漏洞复现</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>CVE</tag>
+      <tag>漏洞复现</tag>
+      
+      <tag>mips</tag>
       
     </tags>
     
