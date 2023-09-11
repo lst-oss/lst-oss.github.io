@@ -19,20 +19,20 @@
     <meta name="description" content="2023-羊城杯-pwn-wparrary_index_bankbreak整数溢出，泄露程序地址，覆盖返回地址为后门地址。  12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455#!&#x2F;usr&#x2F;bin&#x2F;python#encoding:utf-8from">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2023-ycb-pwn">
-<meta property="og:url" content="http://example.com/2023/09/11/2023-ycb-pwn-wp/index.html">
+<meta property="og:url" content="http://example.com/2023/09/11/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF%E7%BA%BF%E4%B8%8B%E8%B5%9B-pwn-wp/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="2023-羊城杯-pwn-wparrary_index_bankbreak整数溢出，泄露程序地址，覆盖返回地址为后门地址。  12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455#!&#x2F;usr&#x2F;bin&#x2F;python#encoding:utf-8from">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912000231865.png">
-<meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/%5Cimage-20230912001210491.png">
+<meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001210491.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001354980.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912000533158.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001627658.png">
-<meta property="og:image" content="c:\Users\lst\AppData\Roaming\Typora\typora-user-images\image-20230912001643985.png">
+<meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001643985.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912000754833.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230911002451369.png">
 <meta property="article:published_time" content="2023-09-11T15:41:32.000Z">
-<meta property="article:modified_time" content="2023-09-11T16:22:37.374Z">
+<meta property="article:modified_time" content="2023-09-11T16:26:25.736Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="wp">
@@ -309,7 +309,7 @@
 
 
 <h3 id="fix"><a href="#fix" class="headerlink" title="fix"></a>fix</h3><p>将两处有符号数比较patch为无符号数比较即可。</p>
-<p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/%5Cimage-20230912001210491.png" srcset="/img/loading.gif" lazyload alt="image-20230912001210491"></p>
+<p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001210491.png" srcset="/img/loading.gif" lazyload alt="image-20230912001210491"></p>
 <p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001354980.png" srcset="/img/loading.gif" lazyload alt="image-20230912001354980"></p>
 <h2 id="easy-force"><a href="#easy-force" class="headerlink" title="easy_force"></a>easy_force</h2><h3 id="break-1"><a href="#break-1" class="headerlink" title="break"></a>break</h3><p>堆溢出 + house of force。</p>
 <p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912000533158.png" srcset="/img/loading.gif" lazyload alt="image-20230912000533158"></p>
@@ -328,7 +328,7 @@
 
 <h3 id="fix-1"><a href="#fix-1" class="headerlink" title="fix"></a>fix</h3><p>将heap overflow固定大小修复为输入大小。</p>
 <p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001627658.png" srcset="/img/loading.gif" lazyload alt="image-20230912001627658"></p>
-<p><img src="C:\Users\lst\AppData\Roaming\Typora\typora-user-images\image-20230912001643985.png" srcset="/img/loading.gif" lazyload alt="image-20230912001643985"></p>
+<p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001643985.png" srcset="/img/loading.gif" lazyload alt="image-20230912001643985"></p>
 <h2 id="Printf-but-not-fmtstr"><a href="#Printf-but-not-fmtstr" class="headerlink" title="Printf_but_not_fmtstr"></a>Printf_but_not_fmtstr</h2><h3 id="break-2"><a href="#break-2" class="headerlink" title="break"></a>break</h3><p>uaf漏洞，限制了IO操作，且程序无法通过<code>exit</code>退出。</p>
 <p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912000754833.png" srcset="/img/loading.gif" lazyload alt="image-20230912000754833"></p>
 <p>思路：</p>
@@ -404,7 +404,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>2023-ycb-pwn</div>
-      <div>http://example.com/2023/09/11/2023-ycb-pwn-wp/</div>
+      <div>http://example.com/2023/09/11/2023-羊城杯线下赛-pwn-wp/</div>
     </div>
     <div class="license-meta">
       
