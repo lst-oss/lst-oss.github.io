@@ -23,13 +23,23 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Custom Mutator Fuzz笔者这部分学习主要是参考hollk师傅以及github上的教程。 这里的自定义突变讲的是跟protobuf结合，输入符合格式的二进制数据，然后转换成符合target函数的参数形式，实现自定义变异。 LibFuzzer定义的protobuf如下： 123456syntax &#x3D; &quot;proto2&quot;;message TEST &amp;#123;  req">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p1.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p2.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/image.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p3.jpg">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p4.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p5.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p6.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p7.png">
+<meta property="og:image" content="http://example.com/img/Custom-Mutator-Fuzz/p8.png">
 <meta property="article:published_time" content="2023-10-24T12:49:57.000Z">
-<meta property="article:modified_time" content="2023-10-24T12:49:57.000Z">
+<meta property="article:modified_time" content="2023-10-24T13:20:30.288Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="fuzz">
 <meta property="article:tag" content="afl">
 <meta property="article:tag" content="libfuzzer">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/Custom-Mutator-Fuzz/p1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -235,7 +245,7 @@
         
         
         
-          61 分钟
+          59 分钟
         
       </span>
     
@@ -283,6 +293,14 @@
             <!-- SEO header -->
             <h1 style="display: none">Custom Mutator Fuzz</h1>
             
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2023年10月24日 晚上
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
@@ -309,9 +327,9 @@
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs makefile">TARGET=libfuzz<br>CXX=clang++<br>CXXFLAGS=-g -fsanitize=fuzzer,address<br>PB_SRC=test.pb.cc<br><br>PROTOBUF_DIR=<span class="hljs-variable">$(HOME)</span>/tools/libprotobuf-mutator/build/external.protobuf<br>LPM_DIR=<span class="hljs-variable">$(HOME)</span>/tools/libprotobuf-mutator<br>PROTOBUF_LIB=<span class="hljs-variable">$(PROTOBUF_DIR)</span>/lib/libprotobufd.a<br>LPM_LIB=<span class="hljs-variable">$(LPM_DIR)</span>/build/src/libfuzzer/libprotobuf-mutator-libfuzzer.a <span class="hljs-variable">$(LPM_DIR)</span>/build/src/libprotobuf-mutator.a<br>INC=-I<span class="hljs-variable">$(PROTOBUF_DIR)</span>/<span class="hljs-keyword">include</span> -I<span class="hljs-variable">$(LPM_DIR)</span><br>DFUZZ=-DLLVMFuzzerTestOneInput=FuzzTEST<br><br><span class="hljs-section">all: <span class="hljs-variable">$(TARGET)</span></span><br><br><span class="hljs-comment"># for testing libprotobuf + libfuzzer</span><br><span class="hljs-comment"># compile harness first</span><br><span class="hljs-comment"># then link lpm_libfuzz with harness.o &amp; static libraries</span><br><span class="hljs-section">harness.o: harness.cc</span><br>	<span class="hljs-variable">$(CXX)</span> <span class="hljs-variable">$(CXXFLAGS)</span> -c <span class="hljs-variable">$(DFUZZ)</span> <span class="hljs-variable">$&lt;</span><br><br><span class="hljs-variable">$(TARGET)</span>: harness.o <span class="hljs-variable">$(TARGET)</span>.cc<br>	<span class="hljs-variable">$(CXX)</span> <span class="hljs-variable">$(CXXFLAGS)</span> -o <span class="hljs-variable">$@</span> <span class="hljs-variable">$^</span> <span class="hljs-variable">$(PB_SRC)</span> <span class="hljs-variable">$(LPM_LIB)</span> <span class="hljs-variable">$(PROTOBUF_LIB)</span> <span class="hljs-variable">$(INC)</span><br><br><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: clean</span><br><span class="hljs-section">clean: </span><br>	rm <span class="hljs-variable">$(TARGET)</span> *.o<br></code></pre></td></tr></table></figure>
 
 <p>之后编译，即可得到目标函数。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p1.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>直接运行<code>libfuzz</code>。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p2.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>几乎是一瞬间就跑出了crash，效率很高。</p>
 <p>另外，我们注意到，上述crash的条件是第一个参数的起始字节为’\x01’即可，也就意味着我们上述定义的b字段没有其他作用，那么我们就可以用来展示自定义效果。</p>
 <p>修改上述<strong>libfuzz.cc</strong></p>
@@ -322,10 +340,10 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">RegisterPostProcessor</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> protobuf::Descriptor* desc,</span></span><br><span class="hljs-params"><span class="hljs-function">    std::function&lt;<span class="hljs-type">void</span>(protobuf::Message* message, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> seed)&gt;</span></span><br><span class="hljs-params"><span class="hljs-function">        callback)</span></span>;<br></code></pre></td></tr></table></figure>
 
 <p>这个api的功能是：为message注册了一个handle，每次突变后调用handle处理变异数据。这里呢，是将变异后的数据b设置为“FUCK”或者“SHIT”。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;image.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/image.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>这里成功将b设置为我们自定义的数据。</p>
 <h2 id="AFL"><a href="#AFL" class="headerlink" title="AFL++"></a>AFL++</h2><p>针对afl++的自定义突变主要是对afl++提供的api进行自定义。实现的效果如下图所示：（这里盗用了hollk师傅的图）。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p3.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p3.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>这张图描述的很明显了，结合libprotobuf-mutator与afl++自定义的api生成自定义突变库*.so文件，然后运行afl++直接运行afl++即可实现自定义突变。</p>
 <p>afl++提供的api如下：<a target="_blank" rel="noopener" href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/custom_mutators.md#2-apis">AFLplusplus&#x2F;docs&#x2F;custom_mutators.md at stable · AFLplusplus&#x2F;AFLplusplus</a></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> *<span class="hljs-title">afl_custom_init</span><span class="hljs-params">(<span class="hljs-type">afl_state_t</span> *afl, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> seed)</span></span>;<br><span class="hljs-function"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-title">afl_custom_fuzz_count</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buf_size)</span></span>;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">afl_custom_splice_optout</span><span class="hljs-params">(<span class="hljs-type">void</span> *data)</span></span>;<br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">afl_custom_fuzz</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buf_size, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> **out_buf, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *add_buf, <span class="hljs-type">size_t</span> add_buf_size, <span class="hljs-type">size_t</span> max_size)</span></span>;<br><span class="hljs-function"><span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-title">afl_custom_describe</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">size_t</span> max_description_len)</span></span>;<br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">afl_custom_post_process</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buf_size, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> **out_buf)</span></span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">afl_custom_init_trim</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buf_size)</span></span>;<br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">afl_custom_trim</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> **out_buf)</span></span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">afl_custom_post_trim</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> success)</span></span>;<br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">afl_custom_havoc_mutation</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buf_size, <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> **out_buf, <span class="hljs-type">size_t</span> max_size)</span></span>;<br><span class="hljs-function"><span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> <span class="hljs-title">afl_custom_havoc_mutation_probability</span><span class="hljs-params">(<span class="hljs-type">void</span> *data)</span></span>;<br><span class="hljs-function"><span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> <span class="hljs-title">afl_custom_queue_get</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *filename)</span></span>;<br><span class="hljs-built_in">void</span> (*afl_custom_fuzz_send)(<span class="hljs-type">void</span> *data, <span class="hljs-type">const</span> u8 *buf, <span class="hljs-type">size_t</span> buf_size);<br><span class="hljs-function">u8 <span class="hljs-title">afl_custom_queue_new_entry</span><span class="hljs-params">(<span class="hljs-type">void</span> *data, <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *filename_new_queue, <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> *filename_orig_queue)</span></span>;<br><span class="hljs-function"><span class="hljs-type">const</span> <span class="hljs-type">char</span>* <span class="hljs-title">afl_custom_introspection</span><span class="hljs-params">(<span class="hljs-type">my_mutator_t</span> *data)</span></span>;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">afl_custom_deinit</span><span class="hljs-params">(<span class="hljs-type">void</span> *data)</span></span>;<br></code></pre></td></tr></table></figure>
@@ -351,7 +369,7 @@
 <p>执行make。</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs makefile">make all	<span class="hljs-comment"># 编译lpm_aflpp_custom_mutator.so文件</span><br>make vuln	<span class="hljs-comment"># 编译target程序</span><br></code></pre></td></tr></table></figure>
 
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p4.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p4.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>编译成功，接下来我们直接运行afl-fuzz进行测试。</p>
 <p>首先，我们需要生成种子文件。这里注意种子内容格式需要与protobuf定义的格式一致。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">a: 7<br>b: &quot;aaaa&quot;<br></code></pre></td></tr></table></figure>
@@ -359,10 +377,10 @@
 <p>定义运行afl-fuzz的shell脚本。</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment">#!/bin/sh</span><br><br>AFL_CUSTOM_MUTATOR_ONLY=<span class="hljs-number">1</span> \<br>AFL_CUSTOM_MUTATOR_LIBRARY=/home/p2lst/Documents/fuzz/protobuf/libprotobuf<span class="hljs-literal">-mutator_fuzzing_learning</span>/<span class="hljs-number">4</span>_libprotobuf_aflpp_custom_mutator/lpm_aflpp_custom_mutator.so \<br>AFL_SKIP_CPUFREQ=<span class="hljs-number">1</span> \<br><span class="hljs-variable">$HOME</span>/tools/AFLplusplus/afl<span class="hljs-literal">-fuzz</span> <span class="hljs-literal">-i</span> ./<span class="hljs-keyword">in</span> <span class="hljs-literal">-o</span> ./out ./vuln<br></code></pre></td></tr></table></figure>
 
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p5.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>几乎是一瞬间就跑出了两个crashes。</p>
 <p>我们逐个查看crash。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p6.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p6.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>与预期相符合。</p>
 <p>通过上述示例，我们注意到上述mutator根本就没有处理我们输入的数据，它所做的仅仅是随机生成新的TEST测试用例而已。</p>
 <p>接下来，我们要做的就是处理来自AFL++的输入数据，将其转换为TEST原型，并使用libprotobuf-mutator对原型进行变异。</p>
@@ -373,13 +391,14 @@
 <p>这里需要注意的是，种子文件不能随便写了，必须是protobuf格式，使用程序生成。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;test.pb.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;bits/stdc++.h&gt;</span></span><br><br><span class="hljs-keyword">using</span> std::cin;<br><span class="hljs-keyword">using</span> std::cout;<br><span class="hljs-keyword">using</span> std::endl;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    TEST t;<br>    t.<span class="hljs-built_in">set_a</span>(<span class="hljs-number">100</span>);<br>    t.<span class="hljs-built_in">set_b</span>(<span class="hljs-string">&quot;aaaa&quot;</span>);<br>    std::string s;<br>    t.<span class="hljs-built_in">SerializeToString</span>(&amp;s);<br><br>    <span class="hljs-function">std::ofstream <span class="hljs-title">out</span><span class="hljs-params">(<span class="hljs-string">&quot;./in/ii&quot;</span>)</span></span>;<br>    out &lt;&lt; s;<br>    out.<span class="hljs-built_in">close</span>();<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;    <br></code></pre></td></tr></table></figure>
 
-<p>这里很简单，就是将符合protobuf的数据写入文件。&#x3D;</p>
+<p>这里很简单，就是将符合protobuf的数据写入文件。</p>
 <p>然后我们开始执行fuzz。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p7.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p7.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>也是非常快的产生了两个crashes。</p>
-<p>![img](&#x2F;img&#x2F;Custom Mutator Fuzz&#x2F;p8.png)</p>
+<p><img src="/img/Custom-Mutator-Fuzz/p8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>这里的crashes也符合我们的预期。</p>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/custom_mutators.md">https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/custom_mutators.md</a></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41202237/category_11470526.html?utm_source=BWXQ_bottombtn&spm=1001.2101.3001.4225">https://blog.csdn.net/qq_41202237/category_11470526.html?utm_source=BWXQ_bottombtn&amp;spm=1001.2101.3001.4225</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/custom_mutators.md">https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/custom_mutators.md</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/bruce30262/libprotobuf-mutator_fuzzing_learning">https://github.com/bruce30262/libprotobuf-mutator_fuzzing_learning</a></p>
 <p><a target="_blank" rel="noopener" href="https://kiprey.github.io/2021/09/protobuf_ctf_fuzz/">https://kiprey.github.io/2021/09/protobuf_ctf_fuzz/</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/Kiprey/protobuf_ctf_fuzz/tree/main">https://github.com/Kiprey/protobuf_ctf_fuzz/tree/main</a></p>
@@ -449,6 +468,11 @@
           <div>2023年10月24日</div>
         </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年10月24日</div>
+        </div>
       
       
         <div class="license-meta-item">
