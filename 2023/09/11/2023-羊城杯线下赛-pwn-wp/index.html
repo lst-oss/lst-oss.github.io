@@ -30,9 +30,9 @@
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001627658.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912001643985.png">
 <meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230912000754833.png">
-<meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230911002451369.png">
+<meta property="og:image" content="http://example.com/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20231026141044529.png">
 <meta property="article:published_time" content="2023-09-11T15:41:32.000Z">
-<meta property="article:modified_time" content="2023-09-12T04:47:26.852Z">
+<meta property="article:modified_time" content="2023-09-12T07:40:14.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="wp">
@@ -232,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.6k 字
+          5.7k 字
         
       </span>
     
@@ -351,11 +351,11 @@
 
 
 
-<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">0000000000402158</span>                               loc_402158:<br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">0000000000402158</span> <span class="hljs-number">48</span> <span class="hljs-number">8</span>D <span class="hljs-number">05</span> <span class="hljs-number">81</span> <span class="hljs-number">1</span>F <span class="hljs-number">00</span> <span class="hljs-number">00</span>          lea     rax, heap<br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">000000000040215</span>F <span class="hljs-number">48</span> <span class="hljs-number">8</span>B <span class="hljs-number">04</span> <span class="hljs-number">10</span>                   <span class="hljs-keyword">mov</span>     rax, [rax+rdx]<br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">0000000000402163</span> <span class="hljs-number">48</span> C7 <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span>          <span class="hljs-keyword">mov</span>     qword ptr [rax], <span class="hljs-number">0</span><br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">000000000040216</span>A <span class="hljs-number">90</span>                            <span class="hljs-keyword">nop</span><br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">000000000040216</span>B E8 <span class="hljs-number">30</span> <span class="hljs-number">20</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span>                <span class="hljs-keyword">call</span>    free<br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">000000000040216</span>B<br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">0000000000402170</span> <span class="hljs-number">90</span>                            <span class="hljs-keyword">nop</span><br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">0000000000402171</span> E9 <span class="hljs-number">4</span>B F3 FF FF                <span class="hljs-keyword">jmp</span>     loc_4014C1<br><span class="hljs-symbol">.eh_frame:</span><span class="hljs-number">0000000000402171</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plain">.eh_frame:0000000000402158                               loc_402158: <br>.eh_frame:0000000000402158 E8 D3 EE FF FF                call    _free<br>.eh_frame:000000000040215D 8B 45 F4                      mov     eax, [rbp-0Ch]<br>.eh_frame:0000000000402160 48 98                         cdqe<br>.eh_frame:0000000000402162 48 8D 04 C5 00 00 00 00       lea     rax, ds:0[rax*8]<br>.eh_frame:000000000040216A 48 89 C2                      mov     rdx, rax<br>.eh_frame:000000000040216D 48 8D 05 6C 1F 00 00          lea     rax, heap<br>.eh_frame:0000000000402174 49 C7 C0 00 00 00 00          mov     r8, 0<br>.eh_frame:000000000040217B 4C 89 04 10                   mov     [rax+rdx], r8<br>.eh_frame:000000000040217F E9 3E F3 FF FF                jmp     loc_4014C2<br>.eh_frame:000000000040217F<br></code></pre></td></tr></table></figure>
 
 
 
-<p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20230911002451369.png" srcset="/img/loading.gif" lazyload alt="image-20230911002451369"></p>
+<p><img src="/img/2023-%E7%BE%8A%E5%9F%8E%E6%9D%AF-pwn-wp/image-20231026141044529.png" srcset="/img/loading.gif" lazyload alt="image-20231026141044529"></p>
 
                 
               </div>
