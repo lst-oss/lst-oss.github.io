@@ -16,12 +16,12 @@
   <meta name="author" content="l1s00t">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Mips栈溢出常见ROP构造参考大佬的博客，在 GitHub 上找到了一个较好的靶机，适合新手来练手。 其地址为：https:&#x2F;&#x2F;github.com&#x2F;praetorian-inc&#x2F;DVRF 准备使用 binwalk提取固件系统。 1binwalk -Me .&#x2F;DVRF_v03.bin   进入固件系统，我们在 pwnable 目录下可以看到两个目录，分别保存着 mips 架构下有漏洞的程序。接下">
+    <meta name="description" content="Mips栈溢出常见ROP构造参考大佬的博客，在 GitHub 上找到了一个较好的靶机，适合新手来练手。 其地址为：https:&#x2F;&#x2F;github.com&#x2F;praetorian-inc&#x2F;DVRF mips基础mips架构    编号 寄存器名称 描述    $0 $zero 第0号寄存器，其值始终为0   $1 $at 保留寄存器   $2-$3 $v0-$v1 values，保存表达式或函数返回结果">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mips栈溢出常见ROP构造">
 <meta property="og:url" content="http://example.com/2023/07/02/mips%E6%A0%88%E6%BA%A2%E5%87%BA%E5%B8%B8%E8%A7%81ROP%E6%9E%84%E9%80%A0/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Mips栈溢出常见ROP构造参考大佬的博客，在 GitHub 上找到了一个较好的靶机，适合新手来练手。 其地址为：https:&#x2F;&#x2F;github.com&#x2F;praetorian-inc&#x2F;DVRF 准备使用 binwalk提取固件系统。 1binwalk -Me .&#x2F;DVRF_v03.bin   进入固件系统，我们在 pwnable 目录下可以看到两个目录，分别保存着 mips 架构下有漏洞的程序。接下">
+<meta property="og:description" content="Mips栈溢出常见ROP构造参考大佬的博客，在 GitHub 上找到了一个较好的靶机，适合新手来练手。 其地址为：https:&#x2F;&#x2F;github.com&#x2F;praetorian-inc&#x2F;DVRF mips基础mips架构    编号 寄存器名称 描述    $0 $zero 第0号寄存器，其值始终为0   $1 $at 保留寄存器   $2-$3 $v0-$v1 values，保存表达式或函数返回结果">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/Mips%E6%A0%88%E6%BA%A2%E5%87%BA%E5%B8%B8%E8%A7%81ROP%E6%9E%84%E9%80%A0/1.png">
 <meta property="og:image" content="http://example.com/img/Mips%E6%A0%88%E6%BA%A2%E5%87%BA%E5%B8%B8%E8%A7%81ROP%E6%9E%84%E9%80%A0/2.png">
@@ -51,7 +51,7 @@
 <meta property="og:image" content="http://example.com/img/Mips%E6%A0%88%E6%BA%A2%E5%87%BA%E5%B8%B8%E8%A7%81ROP%E6%9E%84%E9%80%A0/26.png">
 <meta property="og:image" content="http://example.com/img/Mips%E6%A0%88%E6%BA%A2%E5%87%BA%E5%B8%B8%E8%A7%81ROP%E6%9E%84%E9%80%A0/27.png">
 <meta property="article:published_time" content="2023-07-02T13:18:28.000Z">
-<meta property="article:modified_time" content="2023-07-02T14:35:04.703Z">
+<meta property="article:modified_time" content="2023-11-05T10:28:36.441Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="漏洞复现">
 <meta property="article:tag" content="mips">
@@ -251,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.5k 字
+          9.5k 字
         
       </span>
     
@@ -262,7 +262,7 @@
         
         
         
-          36 分钟
+          40 分钟
         
       </span>
     
@@ -313,7 +313,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2023年7月2日 晚上
+                    本文最后更新于：2023年11月5日 晚上
                   
                 
               </p>
@@ -323,6 +323,117 @@
                 
                 <h1 id="Mips栈溢出常见ROP构造"><a href="#Mips栈溢出常见ROP构造" class="headerlink" title="Mips栈溢出常见ROP构造"></a>Mips栈溢出常见ROP构造</h1><p>参考大佬的博客，在 GitHub 上找到了一个较好的靶机，适合新手来练手。</p>
 <p>其地址为：<a target="_blank" rel="noopener" href="https://github.com/praetorian-inc/DVRF">https://github.com/praetorian-inc/DVRF</a></p>
+<h2 id="mips基础"><a href="#mips基础" class="headerlink" title="mips基础"></a>mips基础</h2><p><strong>mips架构</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">编号</th>
+<th align="left">寄存器名称</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">$0</td>
+<td align="left">$zero</td>
+<td align="left">第0号寄存器，其值始终为0</td>
+</tr>
+<tr>
+<td align="left">$1</td>
+<td align="left">$at</td>
+<td align="left">保留寄存器</td>
+</tr>
+<tr>
+<td align="left">$2-$3</td>
+<td align="left">$v0-$v1</td>
+<td align="left">values，保存表达式或函数返回结果</td>
+</tr>
+<tr>
+<td align="left">$4-$7</td>
+<td align="left">$a0-$a3</td>
+<td align="left">argument，作为函数的前四个参数</td>
+</tr>
+<tr>
+<td align="left">$8-$15</td>
+<td align="left">$t0-$t7</td>
+<td align="left">temporaries，供汇编程序使用的临时寄存器</td>
+</tr>
+<tr>
+<td align="left">$16-$23</td>
+<td align="left">$s0-$s7</td>
+<td align="left">saved values，子函数使用时需先保存原寄存器的值</td>
+</tr>
+<tr>
+<td align="left">$24-$25</td>
+<td align="left">$t8-$t9</td>
+<td align="left">temporaries，供汇编程序使用的临时寄存器，补充$t0-$t7</td>
+</tr>
+<tr>
+<td align="left">$26-$27</td>
+<td align="left">$k0-$k1</td>
+<td align="left">保留，中断处理函数使用</td>
+</tr>
+<tr>
+<td align="left">$28</td>
+<td align="left">$gp</td>
+<td align="left">global pointer，全局指针</td>
+</tr>
+<tr>
+<td align="left">$29</td>
+<td align="left">$sp</td>
+<td align="left">stack pointer，堆栈指针，指向堆栈的栈顶</td>
+</tr>
+<tr>
+<td align="left">$30</td>
+<td align="left">$fp</td>
+<td align="left">frame pointer，保存栈指针</td>
+</tr>
+<tr>
+<td align="left">$31</td>
+<td align="left">$ra</td>
+<td align="left">return address，返回地址</td>
+</tr>
+</tbody></table>
+<p><strong>特殊寄存器</strong>：有3个特殊寄存器：PC（程序计数器）、HI（乘除结果高位寄存器）和LO（乘除结果低位寄存器）。在乘法时，HI保存高32位，LO保存低32位。除法时HI保存余数，LO保存商。</p>
+<p><strong>各个架构对比</strong></p>
+<table>
+<thead>
+<tr>
+<th>架构</th>
+<th>x86</th>
+<th>X64</th>
+<th>ARM</th>
+<th>MIPS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>函数返回值</td>
+<td>eax</td>
+<td>rax</td>
+<td>r0</td>
+<td>v0~v1</td>
+</tr>
+<tr>
+<td>函数调用参数</td>
+<td>栈</td>
+<td>rdi, rsi, rdx, rcx, r8, r9；栈</td>
+<td>r0~r3；栈</td>
+<td>a0~a3；栈</td>
+</tr>
+<tr>
+<td>栈指针</td>
+<td>ebp；esp</td>
+<td>rbp；rsp</td>
+<td>fp(r11)；sp(r13)</td>
+<td>fp&#x2F;s8；sp</td>
+</tr>
+<tr>
+<td>返回地址</td>
+<td>进入子函数时会将返回地址压入栈中</td>
+<td>进入子函数时会将返回地址压入栈中</td>
+<td>lr(r14)寄存器保存着子程序的返回地址</td>
+<td>ra寄存器保留程序的返回地址（叶子函数）</td>
+</tr>
+</tbody></table>
 <h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>使用 <code>binwalk</code>提取固件系统。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">binwalk -Me ./DVRF_v03.<span class="hljs-built_in">bin</span><br></code></pre></td></tr></table></figure>
 
@@ -428,6 +539,9 @@
 <p>参考文档</p>
 <p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/169689">https://www.anquanke.com/post/id/169689</a></p>
 <p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6808#toc-8">https://xz.aliyun.com/t/6808#toc-8</a></p>
+<p><a target="_blank" rel="noopener" href="https://xuanxuanblingbling.github.io/ctf/pwn/2020/09/24/mips/">https://xuanxuanblingbling.github.io/ctf/pwn/2020/09/24/mips/</a></p>
+<p><a target="_blank" rel="noopener" href="https://erosjohn.github.io/2020/07/16/MIPS%E5%9F%BA%E7%A1%80%E5%8F%8A%E6%A0%88%E6%BA%A2%E5%87%BA%E5%85%A5%E9%97%A8%EF%BC%88%E4%B8%80%EF%BC%89/">https://erosjohn.github.io/2020/07/16/MIPS%E5%9F%BA%E7%A1%80%E5%8F%8A%E6%A0%88%E6%BA%A2%E5%87%BA%E5%85%A5%E9%97%A8%EF%BC%88%E4%B8%80%EF%BC%89/</a></p>
+<p><a target="_blank" rel="noopener" href="https://abf1ag.github.io/2022/01/19/yi-gou-pwn-xue-xi-ji-lu/">https://abf1ag.github.io/2022/01/19/yi-gou-pwn-xue-xi-ji-lu/</a></p>
 
                 
               </div>
@@ -494,7 +608,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2023年7月2日</div>
+          <div>2023年11月5日</div>
         </div>
       
       
