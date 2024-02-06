@@ -67,7 +67,7 @@
 <meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206015320731.png">
 <meta property="og:image" content="http://example.com/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206020022971.png">
 <meta property="article:published_time" content="2024-02-06T08:38:36.000Z">
-<meta property="article:modified_time" content="2024-02-06T08:44:19.465Z">
+<meta property="article:modified_time" content="2024-02-06T08:50:10.422Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="pwn">
 <meta property="article:tag" content="windows">
@@ -267,7 +267,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          25k 字
+          26k 字
         
       </span>
     
@@ -278,7 +278,7 @@
         
         
         
-          106 分钟
+          107 分钟
         
       </span>
     
@@ -589,7 +589,7 @@
 <p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206005047214.png" srcset="/img/loading.gif" lazyload alt="image-20240206005047214"></p>
 <p><code>sub_4010E0</code> 函数存在栈溢出，但是程序没有显式的泄露地址，也无法泄露出地址，所以这里几乎没办法过掉Canary保护，那就只能走SEH链了。</p>
 <p>这里无法泄露出任何地址，也就无法泄露出SEH Next的值了，猜测是运行在Win7上的程序。这里可以通过<code>strcat</code> 函数非法访问触发错误处理。</p>
-<p>这里可以使用上述SafeSEH利用方法的第3种，覆盖SEH Handler为<code>pop; pop; ret</code> 类似的gadget，从而执行shellcode。<code>gift</code> 函数提供了类似的gadget，所以这里直接打shellcode就好。</p>
+<p>这里可以使用上述SafeSEH利用方法的第3种，覆盖SEH Handler为<code>pop; pop; ret</code> 类似的gadget，从而执行shellcode。<code>gift</code> 函数提供了类似的gadget，所以这里直接打shellcode就好。但是wndows上的shellcode笔者并没有学过，暂时也没有这个需求，直接使用<code>msfvenom</code> 生成的shellcode。</p>
 <p>调试过程如下：</p>
 <p>执行完<code>strcpy</code>，程序栈帧布局。</p>
 <p><img src="/img/windows-pwn%E5%85%A5%E9%97%A8/image-20240206010439612.png" srcset="/img/loading.gif" lazyload alt="image-20240206010439612"></p>
@@ -647,6 +647,7 @@
 <p><a target="_blank" rel="noopener" href="https://blog.xf1les.net/2021/10/15/introduction-to-windows-x64-pwn-part-one/">https://blog.xf1les.net/2021/10/15/introduction-to-windows-x64-pwn-part-one/</a></p>
 <p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2108?time__1311=n4+xnieDqGwxcDRgxBTroGkWO4iKPN6QwQx&alichlgref=https://cn.bing.com/">https://xz.aliyun.com/t/2108?time__1311=n4%2BxnieDqGwxcDRgxBTroGkWO4iKPN6QwQx&amp;alichlgref=https%3A%2F%2Fcn.bing.com%2F</a></p>
 <p><a target="_blank" rel="noopener" href="https://luckyfuture.top/Msfvenom-Gen-ShellCode">https://luckyfuture.top/Msfvenom-Gen-ShellCode</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2108?time__1311=n4+xnieDqGwxcDRgxBTroGkWO4iKPN6QwQx&alichlgref=https://cn.bing.com/">https://xz.aliyun.com/t/2108?time__1311=n4%2BxnieDqGwxcDRgxBTroGkWO4iKPN6QwQx&amp;alichlgref=https%3A%2F%2Fcn.bing.com%2F</a></p>
 
                 
               </div>
